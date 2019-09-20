@@ -2,6 +2,7 @@
 
 title: Возможно, это ошибка использовать strftime в Rails view
 date: "2019-08-04T16:21:00Z"
+description: ""
 ---
 
 > Автор оригинала - [Andy Croll](https://andycroll.com/ruby/using-strftime-in-a-rails-view-is-probably-a-mistake/)
