@@ -23,10 +23,17 @@ class Layout extends React.Component {
               boxShadow: `none`,
               textDecoration: `none`,
               color: `inherit`,
+              display: 'flex'
             }}
             to={`/`}
           >
-            {title}
+            <div style={{marginTop: "2rem"}}>
+              {title}
+            </div>
+            <img src="logo.png" alt="outofmemory.dev logo" style={{
+              width: "5rem",
+              height: "4.3rem"
+            }} />
           </Link>
         </h1>
       )
