@@ -23,7 +23,8 @@ class Layout extends React.Component {
               boxShadow: `none`,
               textDecoration: `none`,
               color: `inherit`,
-              display: 'flex'
+              display: 'flex',
+              flexWrap: 'wrap-reverse'
             }}
             to={`/`}
           >
