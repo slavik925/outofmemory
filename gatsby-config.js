@@ -1,11 +1,11 @@
 module.exports = {
   siteMetadata: {
     title: `Outofmemory`,
-    author: `Kyle Mathews`,
+    author: `Viacheslav Horodovych`,
     description: `A starter blog demonstrating what Gatsby can do.`,
-    siteUrl: `https://gatsby-starter-blog-demo.netlify.com/`,
+    siteUrl: `https://outofmemory.dev/`,
     social: {
-      twitter: `kylemathews`,
+      twitter: `vhorodovych`,
     },
   },
   plugins: [
@@ -68,6 +68,7 @@ module.exports = {
     },
     `gatsby-plugin-offline`,
     `gatsby-plugin-react-helmet`,
+    `gatsby-plugin-styled-components`,
     {
       resolve: `gatsby-plugin-typography`,
       options: {

@@ -1,0 +1,102 @@
+:root {
+  --main-bg-color: #72BF00;
+  --secondary-color: #FFF;
+}
+
+.logo {
+  display: grid;
+  grid-template-columns: repeat(13, 1fr);
+  grid-template-rows: repeat(13, 1fr);
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+  width: 100%;
+  height: 100%;
+  background-color: var(--main-bg-color);
+}
+
+.div1 {
+  grid-area: 3 / 3 / 4 / 4;
+}
+
+.div2 {
+  grid-area: 2 / 5 / 4 / 6;
+}
+
+.div3 {
+  grid-area: 1 / 7 / 2 / 8;
+}
+
+.div4 {
+  grid-area: 3 / 7 / 6 / 8;
+}
+
+.div5 {
+  grid-area: 2 / 9 / 6 / 10;
+}
+
+.div6 {
+  grid-area: 3 / 11 / 4 / 12;
+}
+
+.div7 {
+  grid-area: 5 / 11 / 6 / 13;
+}
+
+.div8 {
+  grid-area: 5 / 2 / 6 / 6;
+}
+
+.div9 {
+  grid-area: 7 / 1 / 8 / 2;
+}
+
+.div10 {
+  grid-area: 7 / 3 / 8 / 7;
+}
+
+.div11 {
+  grid-area: 7 / 8 / 8 / 12;
+}
+
+.div12 {
+  grid-area: 7 / 13 / 8 / 14;
+}
+
+.div13 {
+  grid-area: 9 / 2 / 10 / 4;
+}
+
+.div14 {
+  grid-area: 11 / 3 / 12 / 4;
+}
+
+.div15 {
+  grid-area: 9 / 5 / 13 / 6;
+}
+
+.div16 {
+  grid-area: 9 / 7 / 12 / 8;
+}
+
+.div17 {
+  grid-area: 13 / 7 / 14 / 8;
+}
+
+.div18 {
+  grid-area: 9 / 9 / 10 / 13;
+}
+
+.div19 {
+  grid-area: 11 / 9 / 13 / 10;
+}
+
+.div20 {
+  grid-area: 11 / 11 / 12 / 12;
+}
+
+.logo>div {
+  background-color: var(--secondary-color);
+  width: 100%;
+  height: 100%;
+  border-radius: 5rem;
+}
