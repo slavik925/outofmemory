@@ -30,11 +30,13 @@ const Bio = () => {
         style={{
           marginRight: rhythm(1 / 2),
           marginBottom: 0,
-          minWidth: '5rem',
-          height: '5rem'
+          minWidth: '4rem',
+          minHeight: '4rem',
+          width: '4rem',
+          height: '4rem'
         }}
       >
-        <Logo style={{padding: '0.5rem', borderRadius: '100%'}}  />
+        <Logo style={{padding: '0.4rem', borderRadius: '1rem'}}  />
       </div>
       <p>
         Written by <strong>{author}</strong> who works at <a href="https://collibra.com">Collibra</a> as a Frontend developer.
