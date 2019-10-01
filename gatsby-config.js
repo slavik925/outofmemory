@@ -71,13 +71,13 @@ module.exports = {
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
-        name: `Gatsby Starter Blog`,
-        short_name: `GatsbyJS`,
+        name: `Outofmemory.dev`,
+        short_name: `Outofmemory`,
         start_url: `/`,
         background_color: `#ffffff`,
         theme_color: `#663399`,
         display: `minimal-ui`,
-        icon: `static/logo.png`,
+        icon: `static/outofmemory_logo.svg`,
       },
     },
     `gatsby-plugin-offline`,

@@ -31,9 +31,8 @@ class Layout extends React.Component {
             <div style={{marginTop: "2rem"}}>
               {title}
             </div>
-            <img src="logo.png" alt="outofmemory.dev logo" style={{
-              width: "5rem",
-              height: "4.3rem"
+            <img src="outofmemory_logo.svg" alt="outofmemory.dev logo" style={{
+              marginLeft: '0.5rem'
             }} />
           </Link>
         </h1>
@@ -55,6 +54,11 @@ class Layout extends React.Component {
             to={`/`}
           >
             {title}
+            <img src="/outofmemory_logo.svg" alt="outofmemory.dev logo" style={{
+              width: '1.2rem',
+              marginBottom: '0.5rem',
+              marginLeft: '0.2rem'
+            }} />
           </Link>
         </h3>
       )
