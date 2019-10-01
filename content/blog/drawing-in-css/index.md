@@ -9,7 +9,7 @@ This is a first article in a short series inspired by CSS/JS Conf 2019 at Budape
 
 The very first topic there was presented by Giulia Cardieri https://twitter.com/ggiulia - "CSS Games and Drawings in the real world: useful or just fun" which was actually quite inspiring.
 
-The main idea is to bring more attention to CSS drawing capabilities, get some fun and experience while code in CSS not in a very usual manner. 
+The main idea is to bring more attention to CSS drawing capabilities, get some fun and experience while coding in CSS not in a usual manner. 
 
 You can familiarize with one of her projects written just for fun called [Dinokiki](http://dinokiki.com) (be careful with the sound).
 
@@ -17,19 +17,19 @@ And just look into this nice Peppa Pig created only with the CSS:
 
 https://codepen.io/marcindotka/pen/GrrKYE
 
-But the most inspiring for me was this Planets game written only using HTML/CSS features with no Java Script at all! More over the game handle clicks on the cards and even has a simple logic to track whether you win or not.
+But the most inspiring for me was this Planets game written only using HTML/CSS features with no Java Script at all! Moreover the game handle clicks on the cards and even has a simple logic to track whether you win or not.
 
 https://codepen.io/giuliacardieri/pen/XYOZom
 
 Looks awesome right? 
 
-But how do you manage clicks and respond to an events without JS? The code and technic is pretty clever - just to use styled check box. When it checked - show one state otherwise another.
+But how do you manage clicks and responds to events without JS? The code and technic is pretty clever - just to use styled check box. When it is checked - show one state otherwise another.
 
 ### But why?
 Here are few points:
-* is to develop creativity
-* to extend you knowledge of CSS
-* to get some fun!
+* develop creativity
+* extend you knowledge of CSS
+* get some fun!
 
 ### But how?
 
@@ -57,7 +57,7 @@ This is a way better I guess and to solidify my success :) I have put this logo 
 
 ### What next?
 
-I've definitely recommend you try to draw something or even go next level and try to create game using only CSS.
+I've definitely recommend you to try to draw something or even go next level and try to create game using only CSS.
 
 In the end I want to leave a few resources that would help you to improve your CSS knowledge. 
 
@@ -74,3 +74,6 @@ As a good inspiration resource I recommend you [codepen.io](https://codepen.io) 
 
 If you are already a CSS ninja you could go and check the latest CSS specs:
 * https://github.com/w3c/csswg-drafts
+
+Watch the whole speech:
+`youtube:https://youtube.com/P21O_6OqpR0?t=3162`
