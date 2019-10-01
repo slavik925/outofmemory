@@ -76,4 +76,4 @@ If you are already a CSS ninja you could go and check the latest CSS specs:
 * https://github.com/w3c/csswg-drafts
 
 Watch the whole speech:
-`youtube:https://youtube.com/P21O_6OqpR0?t=3162`
+`youtube:https://youtube.com/embed/P21O_6OqpR0?start=3162&end=4896&rel=0&amp;showinfo=0`
