@@ -1,6 +1,8 @@
 import React from "react"
 import { Link } from "gatsby"
 
+import "./layout.css"
+
 import { rhythm, scale } from "../utils/typography"
 
 class Layout extends React.Component {
@@ -28,7 +30,7 @@ class Layout extends React.Component {
             }}
             to={`/`}
           >
-            <div style={{marginTop: "2rem"}}>
+            <div style={{ marginTop: "2rem" }}>
               {title}
             </div>
             <img src="outofmemory_logo.svg" alt="outofmemory.dev logo" style={{
