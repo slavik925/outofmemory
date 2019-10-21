@@ -7,7 +7,7 @@ date: "2019-10-21T13:00:00Z"
 
 ## Into
 
-The year is almost _2020_ but still, the dominant method of getting the information is text. The text consists of symbols and letters (or hieroglyphs). To represent the text on the web we are using fonts (typefaces).
+The year is almost _2020_ but still the dominant method of getting the information is text. The text consists of symbols and letters (or hieroglyphs). To represent the text on the web we are using fonts (typefaces).
 
 In the early ages of the web, there was impossible to change default fonts on the web page until Netscape introduces the **font** tag in _1995_.
 
@@ -25,7 +25,7 @@ Besides this, the default font is not always a good choice if you want to increa
 
 ## How to add custom font into the web page?
 
-The simplest way to include font from https://fonts.google.com/. But there are a lot of downsides such as limited variation of fonts and depending on 3d party CDN. So I’m not going to cover this approach.
+The simplest way to include font from https://fonts.google.com/. But there are a lot of downsides such as limited variation of fonts and depending on 3rd party CDN. So I’m not going to cover this approach.
 
 We will be including the custom font face file. First what you need is to choose between multiple fonts face file formats:
 
@@ -57,7 +57,7 @@ After you could include it with font-face property in CSS and you are ready to u
 
 After you include the font you will start to style your text. Add bold heading, change the font weight, start to emphasize text with italic style.
 
-Here is where are the problems start. For every additional style or the font-weight, you actually need to include a separate typeface file!
+Here is where the problems start. For every additional style or the font-weight, you actually need to include a separate typeface file!
 
 Here, for example, all of the variations of Roboto font.
 
@@ -91,7 +91,7 @@ An additional extra would be the animation possibilities that you could apply to
 
 ![Variable font animation](variable_font_animation.gif "Variable font animations")
 
-Variable fonts play ground:
+Variable fonts playground:
 
 * https://www.axis-praxis.org
 * https://v-fonts.com
