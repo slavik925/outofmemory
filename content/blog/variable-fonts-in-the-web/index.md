@@ -77,6 +77,10 @@ You could see how the variable font could do the CSS really awesome:
 
 https://codepen.io/mandymichael/pen/vYYLByj
 
+The good article explaining in deep how the variable font technology works - https://developers.google.com/web/fundamentals/design-and-ux/typography/variable-fonts.
+
+The main idea are in axis and how the font properties distributed between them.
+
 ![Varaible font axis](variable_fonts_venn_weight_axis_width_axis.png "Font file structure")
 
 This technology has support of all the modern browsers so it could be used freely.
