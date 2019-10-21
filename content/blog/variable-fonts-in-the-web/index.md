@@ -5,6 +5,8 @@ date: "2019-10-21T13:00:00Z"
 
 ---
 
+> This article continues CSS/JS Conf Budapest 2019 series. Previous one was about [Drawing in CSS - how and why?](https://outofmemory.dev/drawing-in-css/)
+
 ## Into
 
 The year is almost _2020_ but still the dominant method of getting the information is text. The text consists of symbols and letters (or hieroglyphs). To represent the text on the web we are using fonts (typefaces).
@@ -69,17 +71,15 @@ To optimize this we have a relatively new technology called - Variable Fonts. It
 
 ![Font file structure](vf_file_concept.png "Font file structure")
 
-To use Variable Font first you need to find a typeface you want and then find it variable font version. Typically it with “VF” suffix in the font name (eg. AmstelvarAlpha-VF.woff2).
+To use Variable Font first you need to find a typeface you want and then find it variable font version. Typically it has **VF** suffix in the font name (e.g., _AmstelvarAlpha-VF.woff2_). And that’s it.
 
-And that’s it.
-
-You could see how variable font could fix the CSS Awesomes:
+You could see how the variable font could do the CSS really awesome:
 
 https://codepen.io/mandymichael/pen/vYYLByj
 
 ![Varaible font axis](variable_fonts_venn_weight_axis_width_axis.png "Font file structure")
 
-This technology has the support of all modern browsers so could be used freely.
+This technology has support of all the modern browsers so it could be used freely.
 
 ![Variable font support](caniuse_woff2.png "Variable font support")
 
@@ -91,7 +91,7 @@ An additional extra would be the animation possibilities that you could apply to
 
 ![Variable font animation](variable_font_animation.gif "Variable font animations")
 
-Variable fonts playground:
+Variable fonts playgrounds:
 
 * https://www.axis-praxis.org
 * https://v-fonts.com
