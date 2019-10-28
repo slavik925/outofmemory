@@ -7,6 +7,19 @@
 @font-face {
   font-family: 'Merriweather';
   src: url('../fonts/Merriweather-Roman-VF.woff2') format('woff2');
-  font-weight: 400 700 900;
+  font-weight: 700;
   font-display: swap;
+}
+
+@font-face {
+  font-family: 'Source Sans Pro';
+  src: url('../fonts/SourceSansVariable-Roman.ttf.woff2') format('woff2');
+  font-weight: 400 700;
+  font-display: swap;
+}
+
+@media (max-width: 480px) {
+  html {
+      font-size: 12px;
+  }
 }
