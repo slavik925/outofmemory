@@ -9,7 +9,7 @@ There are tons of different UI libraries and frameworks and often just to try a 
 
 I wanted something more complex but not to much. Look inside but don't drown, see the framework from different angles. This could be level of documentation, support and integrations with other libraries, working with state/store, communication with the server, etc. But again I don’t want this to be to complex.
 
-In my opinion the Chat application fits perfectly for this needs. So lets build a simple chat server and a client.
+In my opinion the Chat application fits perfectly for this needs. So let's build a simple chat server and a client.
 
 ## Graphql Chat Server
 
@@ -17,7 +17,7 @@ As a GraphQL server I choose [Apollo](https://www.apollographql.com/docs/apollo-
 
 ![Apollo Logo](apollo-logo.png "Apollo logo")
 
-Fist of all lest establish a graphql schema:
+Fist of all let create a graphql schema:
 
 ```gql
 
@@ -77,11 +77,11 @@ https://github.com/slavik925/chat-graphql-server/
 
 ## UI/UX for our Chat App
 
-I asked my wife if she is able to help me a bit with the UI part and this ended up in series of few nice mockup of out chat app.
+I asked my wife if she is able to help me a bit with the UI part and this ended up in series of few nice mockup of our chat app.
 
 ![Figma mockups](mockups-figma.png "Figma mockups")
 
-We got everything we need so lets proceed and write the UI.
+We got everything we need so let's proceed and write the UI.
 
 ## Writing the Client on React
 
@@ -176,17 +176,17 @@ const client = new ApolloClient({
 
 We are fetching the current user and setting one in the React context.
 
-Then wrap everything with slightly modified react material ui theme (mostly colors).
+Then wrapping everything with slightly modified react material ui theme (mostly colors).
 
 And adding a route for register user and rending Main page or Chat page depending if the user is logged in our no.
 
 ### What next?
 
-I not going to describe every piece, you could browser client code from here - https://github.com/slavik925/chat-graphql-client.
+I'm not going to describe every piece, you could browser client code from here - https://github.com/slavik925/chat-graphql-client.
 
 There are a lot of thinks that could be done better. For example there are lack of tests, components could be divided better and the types are not everywhere. But it give an idea how the app is written/look using the React library.
 
-The whole point of this is to create a quick sketch to see how are you comfortable with the technology you picket? What is it offers? Who many problems you faced? How easy you could solve this problems?
+The whole point of this is to create a quick sketch to see how are you comfortable with the technology you picket? What is it offers? How many problems you faced? How easy you could solve this problems?
 
 Here are the few pic how the Chat App looks.
 
@@ -209,7 +209,7 @@ The main pros:
 
 * Create React app is an amazing starter with TS support out of the box and have placeholders almost for everything.
 
-* Apollo helps a lof by providing clients, hooks, etc.
+* Apollo helps a lot by providing clients, hooks, etc.
 
 * Components are well isolated. You could separate everything. (Logic could be placed in the hooks for example).
 
