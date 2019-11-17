@@ -7,7 +7,7 @@ date: "2019-10-28T18:56:00Z"
 
 There are tons of different UI libraries and frameworks and often just to try a new one you ended up with “Hello world!” or simple TODO app.
 
-I wanted something more complex but not to much. Look inside but don't drown, see the framework from different angles. This could be level of documentation, support and integrations with other libraries, working with state/store, communication with the server, etc. But again I don’t want this to be to complex.
+I wanted something more complex but not too much. Look inside but don't drown, see the framework from different angles. This could be level of documentation, support and integrations with other libraries, working with state/store, communication with the server, etc. But again I don’t want this to be to complex.
 
 In my opinion the Chat application fits perfectly for this needs. So let's build a simple chat server and a client.
 
@@ -61,14 +61,14 @@ Fist of all let create a graphql schema:
   }
 ```
 
-This is a very basic schema but it's enough for know.
+This is a very basic schema but it's enough for now.
 
-* User could register with an email and password.
-* Login with an email and password.
+* User could register with an email and a password.
+* Login with an email and a password.
 * Fetch all available channels (Rooms) or create a new one.
 * Write and send a new message to the channel.
 
-As small an additional feature there is a Subscription called <span style="color:coral">messageAdded</span>. Client could subscribe through GraphqlQL (WebSockets) and listen when there are new messages in the channel and refresh content accordingly.
+As small additional feature there is a Subscription called <span style="color:coral">messageAdded</span>. Client could subscribe through GraphqlQL (WebSockets) and listen when there are new messages in the channel and refresh content accordingly.
 
 There are no external storage connected which means all the values are stored in memory so all the information will be lost after server restart. (This part could be enhanced with Firebase or just by storing data in the file, etc.)
 
@@ -89,7 +89,7 @@ We got everything we need so let's proceed and write the UI.
 
 ### Why React?
 
-It’s simple - because React is my main tool currently. But the idea is that in future I think to create something similar using the other libraries (Angular, Vue, Svelte, etc.) and it's good to have something you know well to compare with new things. Not just to imagine but compare based on the real experience.
+It’s simple - because React is my main tool currently. But the idea is that in future I think to create something similar using the other libraries (Angular, Vue, Svelte, etc.) and it's good to have something you know well to compare with then new things. Not just to imagine but to compare based on the real experience.
 #### Create React App
 
 To generate a new React App with typescript support run:
@@ -115,7 +115,7 @@ And the last important touch is [React Router](https://reacttraining.com/react-r
 npm install react-router-dom
 ```
 
-This is ours core minimum.
+This is ours base minimum.
 
 ### Communication with the Server
 
@@ -178,15 +178,15 @@ We are fetching the current user and setting one in the React context.
 
 Then wrapping everything with slightly modified react material ui theme (mostly colors).
 
-And adding a route for register user and rending Main page or Chat page depending if the user is logged in our no.
+And adding a route for registered user and rending Main page or Chat page depending if the user is logged in or no.
 
 ### What next?
 
-I'm not going to describe every piece, you could browser client code from here - https://github.com/slavik925/chat-graphql-client.
+I'm not going to describe every piece, you could get browser client code from here - https://github.com/slavik925/chat-graphql-client.
 
-There are a lot of thinks that could be done better. For example there are lack of tests, components could be divided better and the types are not everywhere. But it give an idea how the app is written/look using the React library.
+There are a lot of things that could be done better. For example there are lack of tests, components could be divided better and the types are not everywhere. But it gives an idea how the app is written/look using the React library.
 
-The whole point of this is to create a quick sketch to see how are you comfortable with the technology you picket? What is it offers? How many problems you faced? How easy you could solve this problems?
+The whole point of this is to create a quick sketch to see how are you comfortable with the technology you've picked? What does it offers? How many problems have you faced? How easy you could solve this problems?
 
 Here are the few pic how the Chat App looks.
 
