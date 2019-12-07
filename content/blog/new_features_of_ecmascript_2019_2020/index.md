@@ -5,20 +5,20 @@ date: "2019-12-06T16:05:00Z"
 
 ## Understanding the naming
 
-The naming in JS world was always something that confused me.
-ES6 and ES10 is that EScript? ECMAScript 2019 it this JavaScrip or no? ts39 - what's that about?
+The naming in JS world has always been something that confused me.
+ES6 and ES10 is that EScript? ECMAScript 2019 it this JavaScript or no? ts39 - what's that about?
 
 So once for all lets deal with this names:
 
 ECMAScript (ES) - [Wiki](https://en.wikipedia.org/wiki/ECMAScript)
 
 - is a scripting-language specification standardized by Ecma International.
-- ECMA (European Computer Manufacturers Association) - is a standards organization for information and communication systems
-- ECMAScript was created by Brendan Eich to standardize the JavaScript language (initially it was named Mocha, later LiveScript, and finally JavaScript.).
+- ECMA (European Computer Manufacturers Association) - is a standards organization for information and communication systems.
+- ECMAScript was created by Brendan Eich to standardize the JavaScript language (initially it was named Mocha, later LiveScript, and finally JavaScript).
 
 JavaScript (JS) - [Wiki](https://en.wikipedia.org/wiki/JavaScript)
 
-- Hight-level, just-in-time compiled programming language that conforms to the ECMAScript specification.
+- High-level, just-in-time compiled programming language that conforms to the ECMAScript specification.
 
 TS39 is a group that is a part of ECMA organization.
 
@@ -37,7 +37,7 @@ And here is the latest draft:
 
 https://tc39.es/ecma262/
 
-There aren't a lot of the new additions. So lets focus on the most significant one:
+There aren't a lot of the new additions. So lets focus on the most significant ones:
 
 ES2019
 
@@ -98,7 +98,7 @@ const obj = test.trimStart()
 // Result: obj = 'This is a test string   ';
 ```
 
-trimEnd do the same but for the end of string. This functions has an aliases:
+trimEnd does the same but for the end of string. This functions has aliases:
 
 - String.trimLeft()
 - String.trimRight()
@@ -113,7 +113,7 @@ Check current support at <a href="https://kangax.github.io/compat-table/es2016pl
 
 ### Array.{flat, flatMap}
 
-- Array.flat(depth: int) - flatten the array with specified depth, easier to show this on the example:
+- Array.flat(depth: int) - flattens the array with specified depth, it's easier to show this on the example:
 
 ```javascript
 const numbers = [1, 2, [3, 4]];
@@ -134,7 +134,7 @@ const obj = numbers.flat(Infinity);
 // Result: obj = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 ```
 
-- Array.flatMap(function(currentVal, index, array)) - first apply the given function to every array element and then 'flat' result and insert one in the new array. The same could be achieved by calling a `map` and then `flat` with depth = 1.
+- Array.flatMap(function(currentVal, index, array)) - first applies the given function to every array element and then 'flat's the result and inserts one in the new array. The same could be achieved by calling a `map` and then `flat` with depth = 1.
 
 ```javascript
 const numbers = [1, 2, 3, 4]
@@ -221,7 +221,7 @@ Check current support at <a href="https://kangax.github.io/compat-table/es2016pl
 
 #### BigInt
 
-BigInt is a new 7th primitive type. Fixed number of varing length. You could create is with BigInt constructor of with `n` literal;
+BigInt is a new 7th primitive type. Fixed number of varying length. You could create it with BigInt constructor of with `n` literal;
 
 ```javascript
 const bigNumber = 9007199254740991n
@@ -238,7 +238,7 @@ Check current support at <a href="https://kangax.github.io/compat-table/es2016pl
 
 #### Promise.allSettled
 
-Returns a promise that's resolves after all of the given promises have either resolved or rejected.
+Returns a promise that resolves after all of the given promises have either resolved or rejected.
 
 ```javascript
 const promise1 = Promise.resolve(3)
