@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Пробуем Deno | Outofmemory</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Пробуем Deno" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Джаваскрипт и бекенд, как по мне, понятия не совместимые, но все же, встречаем дено." />
+<meta property="og:description" content="Джаваскрипт и бекенд, как по мне, понятия не совместимые, но все же, встречаем дено." />
+<link rel="canonical" href="https://outofmemory.dev/2020/07/21/lets-try-deno.html" />
+<meta property="og:url" content="https://outofmemory.dev/2020/07/21/lets-try-deno.html" />
+<meta property="og:site_name" content="Outofmemory" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-07-21T13:02:00+00:00" />
+<script type="application/ld+json">
+{"headline":"Пробуем Deno","dateModified":"2020-07-21T13:02:00+00:00","datePublished":"2020-07-21T13:02:00+00:00","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://outofmemory.dev/logo.svg"}},"mainEntityOfPage":{"@type":"WebPage","@id":"https://outofmemory.dev/2020/07/21/lets-try-deno.html"},"url":"https://outofmemory.dev/2020/07/21/lets-try-deno.html","description":"Джаваскрипт и бекенд, как по мне, понятия не совместимые, но все же, встречаем дено.","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="https://outofmemory.dev/feed.xml" title="Outofmemory" /></head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" href="/">
+      
+        <img src="/logo.svg" class="site-logo" width="auto" height="56">
+        Outofmemory
+      
+    </a></div>
+</header><main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Пробуем Deno</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2020-07-21T13:02:00+00:00" itemprop="datePublished">Jul 21, 2020
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>Джаваскрипт и бекенд, как по мне, понятия не совместимые, но все же, встречаем дено.</p>
+
+<p style="text-align: center">
+<img src="/assets/denoLogo.svg" alt="drawing" width="200" />
+</p>
+
+<p>Node и npm экосистема - главный образец показывающий на сколько джаваскрипт крут и то, как нужно делать качественный софт.
+Вот только, создатель посмотрел, почесал репу, и подумал здесь уже ничего не исправить, жги. И отжог, видимо как-то так и появился дено, который теперь убийца ноды, а npm вообще выбросили.</p>
+
+<h4 id="в-чём-принципиальные-отличия">В чём принципиальные отличия?</h4>
+<p>Ключевых на самом то деле не так уж и много:</p>
+
+<ul>
+  <li>Переписали все нативные байдинги на раст</li>
+  <li>Выбросили пакетный менеджер (теперь можно просто воткнуть что угодно ссылкой)</li>
+  <li>Из коробки можно запускать тайпскрипт</li>
+</ul>
+
+<p>Там, еще куча всего, но ценность этого всего весьма сомнительная:</p>
+<ul>
+  <li>теперь по умолчанию нет доступа ни к чему пока явно не укажешь (сеть, файловая система и тп.)</li>
+  <li>поставляется всё одним бинарником</li>
+  <li>есть инспектор зависимостей и встроенный код форматер, КАРЛ!</li>
+</ul>
+
+<p>Вот это я понимаю 21 век. Я не особо нод разработчик, но прямо сказать, что продукт решает какую нибудь конкретную проблему весьма сложно. Больше всего это похоже на релиз “Node перезагрузка” чем на что-то действительно особенное.</p>
+
+<h4 id="давай-уже-там-писать-чего-тянуть-то">Давай уже там писать, чего тянуть то.</h4>
+
+<p>На момент написания статьи версия дено уже 1 с чем то там, что, как я считаю должно быть показателем довольно стабильного продукта.</p>
+
+<p>Набросаем простую CLI app. Суть такая, запускаем с параметром -c “Страна”, софтина дергает апишку и возвращает количество covid кейсов за прошлые сутки для введенной станы.</p>
+
+<p>Ставим дено на винду:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>choco install deno
+</code></pre></div></div>
+
+<h4 id="c-чего-начинается-разработка">C чего начинается разработка?</h4>
+
+<p>Правильная (у нас только такая) конечно же с тестирования, подумал я, и создал файлик с простым тестом.</p>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">assertEquals</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">https://deno.land/std/testing/asserts.ts</span><span class="dl">"</span><span class="p">;</span>
+
+<span class="nx">Deno</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="dl">"</span><span class="s2">Should correctly parse country argument</span><span class="dl">"</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="nx">assertEquals</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">);</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<p>Давайте запустем и вн….имание, в ответ получаем:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>error: TS2345 [ERROR]: Argument of type '{ depth: number; sorted: boolean; trailingComma: boolean; compact: boolean; iterableLimit: number; }' is not assignable to parameter of type 'InspectOptions'.
+</code></pre></div></div>
+
+<p>Ну что ж, бывает. А в голове промелькнуло: интересно, а как на этом писать интеграционные тесты, бдд и вот это вот все. А как апишечку замокать для тестов? (Да и хер с этим всем, теперь везде лямбды на три сточки, серверлесс, может этих всех тестов и не нужно).</p>
+
+<p>Раздосадованный я забиваю на тесты (это же джаваскрипт детка) и решаю писать так.
+Вот что получилось (не буду вдаваться в детали и так всё понятно):</p>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nx">clc</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">https://deno.land/x/color/index.ts</span><span class="dl">"</span><span class="p">;</span>
+
+<span class="kr">interface</span> <span class="nx">ICovidReportApp</span> <span class="p">{</span>
+  <span class="nl">country</span><span class="p">:</span> <span class="kr">string</span> <span class="o">|</span> <span class="kc">null</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kr">interface</span> <span class="nx">ICovidResponse</span> <span class="p">{</span>
+  <span class="nl">Country</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+  <span class="nl">CountryCode</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+  <span class="nl">Cases</span><span class="p">:</span> <span class="kr">number</span><span class="p">;</span>
+  <span class="nl">Status</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">getArg</span><span class="p">(</span><span class="nx">param</span><span class="p">:</span> <span class="kr">string</span><span class="p">):</span> <span class="kr">string</span> <span class="o">|</span> <span class="kc">null</span> <span class="p">{</span>
+  <span class="kd">const</span> <span class="nx">parameterIndex</span> <span class="o">=</span> <span class="nx">Deno</span><span class="p">.</span><span class="nx">args</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="nx">param</span><span class="p">);</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="nx">parameterIndex</span> <span class="o">!==</span> <span class="o">-</span><span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="nx">parameterIndex</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="nx">Deno</span><span class="p">.</span><span class="nx">args</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// the parameter array will looks like ['-c', 'poland'] </span>
+    <span class="c1">// so we need to take the next array item to get actual param value</span>
+    <span class="k">return</span> <span class="nx">Deno</span><span class="p">.</span><span class="nx">args</span><span class="p">[</span><span class="nx">parameterIndex</span> <span class="o">+</span> <span class="mi">1</span><span class="p">];</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="kc">null</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">async</span> <span class="kd">function</span> <span class="nx">main</span><span class="p">({</span> <span class="nx">country</span> <span class="o">=</span> <span class="dl">""</span> <span class="p">}:</span> <span class="nx">ICovidReportApp</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// Check if country is set</span>
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">country</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="dl">"</span><span class="s2">County is not specified!</span><span class="dl">"</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="c1">// Make the country name acceptable for api</span>
+  <span class="c1">// The api accept the country in specific format like 'south-africa'</span>
+  <span class="kd">const</span> <span class="nx">countrySlug</span> <span class="o">=</span> <span class="nx">country</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">().</span><span class="nx">replaceAll</span><span class="p">(</span>
+    <span class="dl">"</span><span class="s2"> </span><span class="dl">"</span><span class="p">,</span>
+    <span class="dl">"</span><span class="s2">-</span><span class="dl">"</span><span class="p">,</span>
+  <span class="p">);</span>
+
+  <span class="c1">// API Need dates so put today and yesterday as dates to get ~24h of data</span>
+  <span class="kd">let</span> <span class="nx">startDate</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">();</span>
+  <span class="kd">let</span> <span class="nx">endDate</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">();</span>
+
+  <span class="c1">// Since the api doesn't bother a lot with time we just set it to 0 </span>
+  <span class="nx">startDate</span><span class="p">.</span><span class="nx">setHours</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+  <span class="nx">endDate</span><span class="p">.</span><span class="nx">setHours</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+  <span class="c1">// And our end date will be the today - 1 day, this allows to get results for ~24h</span>
+  <span class="nx">startDate</span><span class="p">.</span><span class="nx">setDate</span><span class="p">(</span><span class="nx">endDate</span><span class="p">.</span><span class="nx">getDate</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
+
+  <span class="kd">const</span> <span class="nx">queryString</span> <span class="o">=</span>
+    <span class="s2">`https://api.covid19api.com/country/</span><span class="p">${</span><span class="nx">countrySlug</span><span class="p">}</span><span class="s2">/status/confirmed?from=</span><span class="p">${</span><span class="nx">startDate</span><span class="p">.</span><span class="nx">toISOString</span><span class="p">()}</span><span class="s2">&amp;to=</span><span class="p">${</span><span class="nx">endDate</span><span class="p">.</span><span class="nx">toISOString</span><span class="p">()}</span><span class="s2">`</span><span class="p">;</span>
+
+  <span class="k">try</span> <span class="p">{</span>
+
+    <span class="c1">// Fetch the data</span>
+    <span class="kd">const</span> <span class="nx">res</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">fetch</span><span class="p">(</span><span class="nx">queryString</span><span class="p">);</span>
+    <span class="c1">// Parse the data</span>
+    <span class="kd">const</span> <span class="na">resData</span><span class="p">:</span> <span class="nx">ICovidResponse</span><span class="p">[]</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">res</span><span class="p">.</span><span class="nx">json</span><span class="p">();</span>
+
+    <span class="c1">// Check if everything is ok</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">resData</span> <span class="o">||</span> <span class="nx">res</span><span class="p">.</span><span class="nx">status</span> <span class="o">!==</span> <span class="mi">200</span> <span class="o">||</span> <span class="nx">resData</span><span class="p">.</span><span class="nx">length</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span> 
+      <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="dl">"</span><span class="s2">No data was found!</span><span class="dl">"</span><span class="p">);</span>
+      <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="kd">const</span> <span class="nx">covidCases</span> <span class="o">=</span> <span class="nx">resData</span><span class="p">.</span><span class="nx">reduce</span><span class="p">((</span><span class="nx">cases</span><span class="p">,</span> <span class="nx">curr</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="nx">cases</span> <span class="o">+</span> <span class="nx">curr</span><span class="p">.</span><span class="nx">Cases</span><span class="p">),</span> <span class="mi">0</span><span class="p">);</span>
+    <span class="kd">const</span> <span class="nx">covidCasesRed</span> <span class="o">=</span> <span class="nx">clc</span><span class="p">.</span><span class="nx">bgRed</span><span class="p">.</span><span class="nx">text</span><span class="p">(</span><span class="nx">covidCases</span><span class="p">);</span>
+    <span class="kd">const</span> <span class="nx">contryBlue</span> <span class="o">=</span> <span class="nx">clc</span><span class="p">.</span><span class="nx">bgBlue</span><span class="p">.</span><span class="nx">text</span><span class="p">(</span><span class="nx">country</span><span class="p">);</span>
+
+    <span class="c1">// Nice color output</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">`There are </span><span class="p">${</span><span class="nx">covidCasesRed</span><span class="p">}${</span><span class="nx">clc</span><span class="p">.</span><span class="nx">reset</span><span class="p">.</span><span class="nx">text</span><span class="p">(</span><span class="dl">""</span><span class="p">)}</span><span class="s2"> confirmed cases for last 24h in </span><span class="p">${</span><span class="nx">contryBlue</span><span class="p">}${</span><span class="nx">clc</span><span class="p">.</span><span class="nx">reset</span><span class="p">.</span><span class="nx">text</span><span class="p">(</span><span class="dl">"</span><span class="s2">.</span><span class="dl">"</span><span class="p">)}</span><span class="s2">`</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="nx">e</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// Main entry point, parse the input args and pass into the function</span>
+<span class="nx">main</span><span class="p">({</span><span class="na">country</span><span class="p">:</span> <span class="nx">getArg</span><span class="p">(</span><span class="dl">"</span><span class="s2">-c</span><span class="dl">"</span><span class="p">)});</span>
+</code></pre></div></div>
+
+<p>https://gist.github.com/slavik925/5dacf1e6865409ea5eb4a5a39cdad42a</p>
+
+<p>Для запуска:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>deno run --allow-net covid24Report.ts -c “Germany”
+</code></pre></div></div>
+
+<p>Output:</p>
+
+<p><img src="/assets/coronaReport.png" alt="Corona report" title="Corona report" /></p>
+
+<h4 id="какой-вывод-можно-сделать">Какой вывод можно сделать?</h4>
+
+<ul>
+  <li>Хреновый язык как был так и остался :)</li>
+  <li>Никакого повода для миграции хотя бы с того же nodejs. Выглядит как шаг немного вперёд и в сторону, но всё равно выстрелит, ведь джаваскрипт это комьюнити построенное на хайпе и смене библиотек каждые 2 мясяца (А нода залежалась уже, да).</li>
+  <li>Все также не хватает простого и стандартного функционала. Например для CLI аргументов, дат или ещё простых базовых вещей. Все нужно делать тонной сторонних библиотек и по концове в коробке из 1000 пазлов один какой-нибудь, как обычно, возьмёт да и потеряется.</li>
+</ul>
+
+<p>Для сравнения можно взять такой же 25 летний руби и напедалить все тоже:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'getoptlong'</span>
+<span class="nb">require</span> <span class="s1">'net/http'</span>
+<span class="nb">require</span> <span class="s1">'json'</span>
+<span class="nb">require</span> <span class="s1">'time'</span>  
+<span class="nb">require</span> <span class="s1">'date'</span>
+
+<span class="n">opts</span> <span class="o">=</span> <span class="no">GetoptLong</span><span class="p">.</span><span class="nf">new</span><span class="p">([</span><span class="s1">'--country'</span><span class="p">,</span> <span class="s1">'-c'</span><span class="p">,</span> <span class="no">GetoptLong</span><span class="o">::</span><span class="no">REQUIRED_ARGUMENT</span><span class="p">])</span>
+
+<span class="n">country_slug</span> <span class="o">=</span> <span class="kp">nil</span>
+<span class="n">original_contry</span> <span class="o">=</span> <span class="kp">nil</span>
+
+<span class="n">opts</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">opt</span><span class="p">,</span> <span class="n">arg</span><span class="o">|</span>
+    <span class="k">case</span> <span class="n">opt</span>
+        <span class="k">when</span> <span class="s1">'--country'</span>
+            <span class="n">original_contry</span> <span class="o">=</span> <span class="n">arg</span>
+            <span class="n">country_slug</span> <span class="o">=</span> <span class="n">arg</span><span class="p">.</span><span class="nf">downcase</span><span class="p">.</span><span class="nf">gsub</span><span class="p">(</span><span class="sr">/\s/</span><span class="p">,</span> <span class="s2">"-"</span><span class="p">)</span>
+    <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="n">today_date</span> <span class="o">=</span> <span class="no">Date</span><span class="p">.</span><span class="nf">today</span><span class="p">.</span><span class="nf">to_time</span><span class="p">.</span><span class="nf">utc</span><span class="p">.</span><span class="nf">iso8601</span>
+<span class="n">yesterday_date</span> <span class="o">=</span> <span class="no">Date</span><span class="p">.</span><span class="nf">today</span><span class="p">.</span><span class="nf">prev_day</span><span class="p">.</span><span class="nf">to_time</span><span class="p">.</span><span class="nf">utc</span><span class="p">.</span><span class="nf">iso8601</span>
+
+<span class="n">url</span> <span class="o">=</span> <span class="s2">"https://api.covid19api.com/country/</span><span class="si">#{</span><span class="n">country_slug</span><span class="si">}</span><span class="s2">/status/confirmed?from=</span><span class="si">#{</span><span class="n">yesterday_date</span><span class="si">}</span><span class="s2">&amp;to=</span><span class="si">#{</span><span class="n">today_date</span><span class="si">}</span><span class="s2">"</span>
+
+<span class="n">uri</span> <span class="o">=</span> <span class="no">URI</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<span class="n">response</span> <span class="o">=</span> <span class="no">Net</span><span class="o">::</span><span class="no">HTTP</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
+
+<span class="n">response_json</span> <span class="o">=</span> <span class="no">JSON</span><span class="p">.</span><span class="nf">parse</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+<span class="n">total_cases</span> <span class="o">=</span> <span class="n">response_json</span><span class="p">.</span><span class="nf">reduce</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="o">|</span> <span class="n">casesSum</span><span class="p">,</span> <span class="n">response</span> <span class="o">|</span> <span class="n">casesSum</span> <span class="o">+</span> <span class="n">response</span><span class="p">[</span><span class="s1">'Cases'</span><span class="p">]</span> <span class="p">}</span>
+
+<span class="nb">puts</span> <span class="s2">"There are </span><span class="se">\e</span><span class="s2">[41m</span><span class="si">#{</span><span class="n">total_cases</span><span class="si">}</span><span class="se">\e</span><span class="s2">[0m confirmed cases for last 24h in  </span><span class="se">\e</span><span class="s2">[44m</span><span class="si">#{</span><span class="n">original_contry</span><span class="p">.</span><span class="nf">capitalize</span><span class="si">}</span><span class="se">\e</span><span class="s2">[0m"</span>
+</code></pre></div></div>
+
+<p>https://gist.github.com/slavik925/778cd1f9c25013efb5832a5bd8a881d9</p>
+
+<p>Все библиотеки встроенные, вышло проще, качественнее и красивее. При том что я вообще не рубист, ни разу :)</p>
+
+<p>Скорость? Ха смешно, все ноют о какой-то иллюзорной скорости в мутных бенчмарках. Где она - я не знаю и никогда не видел.</p>
+
+<h4 id="итого">Итого</h4>
+
+<p>Если вы сприптодрочер и js/ts захватит мир - однозначно брать, пилить новые либы каждые 2 месяца, плакать, радоваться, всё как вы привыкли.</p>
+
+<p>Если вы вменяем разраб и вам нужны инструменты для быстрой и качественной работы посмотрите в сторону лучше уж раста ну и всегда есть Ruby/Python/Java/C#/etc.</p>
+
+<p>Сюда можно заглянуть только, так из интереса.</p>
+
+<blockquote>
+  <p>Все вышеизложенное это конечно же мои личные субъективные впечатления, возможно всё на самом деле не так :)</p>
+</blockquote>
+
+
+  </div><a class="u-url" href="/2020/07/21/lets-try-deno.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Outofmemory</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Outofmemory</li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/slavik925"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">slavik925</span></a></li><li><a href="https://www.twitter.com/vhorodovych"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">vhorodovych</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p></p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

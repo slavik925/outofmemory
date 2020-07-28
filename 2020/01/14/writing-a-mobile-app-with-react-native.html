@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Writing a stopwatch and rounds counter mobile app with React Native | Outofmemory</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Writing a stopwatch and rounds counter mobile app with React Native" />
+<meta property="og:locale" content="en_US" />
+<link rel="canonical" href="https://outofmemory.dev/2020/01/14/writing-a-mobile-app-with-react-native.html" />
+<meta property="og:url" content="https://outofmemory.dev/2020/01/14/writing-a-mobile-app-with-react-native.html" />
+<meta property="og:site_name" content="Outofmemory" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-01-14T12:43:00+00:00" />
+<script type="application/ld+json">
+{"headline":"Writing a stopwatch and rounds counter mobile app with React Native","dateModified":"2020-01-14T12:43:00+00:00","datePublished":"2020-01-14T12:43:00+00:00","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://outofmemory.dev/logo.svg"}},"mainEntityOfPage":{"@type":"WebPage","@id":"https://outofmemory.dev/2020/01/14/writing-a-mobile-app-with-react-native.html"},"url":"https://outofmemory.dev/2020/01/14/writing-a-mobile-app-with-react-native.html","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="https://outofmemory.dev/feed.xml" title="Outofmemory" /></head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" href="/">
+      
+        <img src="/logo.svg" class="site-logo" width="auto" height="56">
+        Outofmemory
+      
+    </a></div>
+</header><main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Writing a stopwatch and rounds counter mobile app with React Native</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2020-01-14T12:43:00+00:00" itemprop="datePublished">Jan 14, 2020
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p><img src="/assets/concept-development-device-flat.jpg" alt="Article title image" title="Article title image" /></p>
+
+<p>In a gym I’m often need to track time of the exercise I’m doing. Rest time between the exercises and how many rounds I have completed already. The screen should be always awake while the app is running.</p>
+
+<p>Imagine the following scenario:</p>
+<ul>
+  <li>click start, then do exercise for 1 minute time or 10 reps</li>
+  <li>then hit stop and rest for few minutes</li>
+  <li>awesome, you did one round, now repeat</li>
+</ul>
+
+<p>If you search for the ‘stopwatch’ or ‘fitness timer’, etc. in the GPlay/iStore you will definitely find many apps that doing this. But:</p>
+
+<ol>
+  <li>All of them free one) contains ads</li>
+  <li>They are always slightly different from what I actually need</li>
+  <li>We are developers! We could write our own!</li>
+</ol>
+
+<h2 id="mobile-development-and-the-native-approach">Mobile development and the native approach</h2>
+
+<p>Every operation system has it’s own set of APIs available that are allowing to access a device resources. This is not an exception for the two most popular mobile operating systems - Android and iOS.</p>
+
+<p>If you want do develop for Android - welcome to the Java world (or Kotlin)! Do you want to create nice UI? XML if your friend. So almost nothing in common with the web development ( except XML part :) ).</p>
+
+<p>At the iOS side everything is the same except that instead of Java you will need to learn Swift and Swift UI.</p>
+
+<p>If you are wanted to a get large audience you need to develop an application literally twice just to cover two major platforms! There are two completely separate worlds that are in separate universe and we with our web development are in our own universe.</p>
+
+<p>So how could we join them together?</p>
+
+<h2 id="joining-the-web-development-and-the-mobile-development-together">Joining the web development and the mobile development together</h2>
+
+<p>People are not stupid (at least not all of them), no one’s wanted to do the same work twice. So what if we could grab the existing web apps and runs them on the phone? What do we need? Right, another level of abstraction.</p>
+
+<p>The app written with web technologies are called <em>Hybrid</em> and could be divided into two type groups.</p>
+
+<h3 id="type-group-1-hybrid-native-apps">Type group #1: Hybrid-Native apps</h3>
+
+<p>In this case our level of abstraction contains bindings to the native functions.</p>
+
+<ul>
+  <li><em>Hybrid-Native</em> frameworks are <a href="https://facebook.github.io/react-native">ReactNative</a>, <a href="https://dotnet.microsoft.com/apps/xamarin">Xamarin</a>, <a href="https://www.nativescript.org">NativeScript</a>, <a href="https://flutter.dev/">Flutter</a>. They are all have it’s own  interlayer to communicate with a mobile OS. As an example ReactNative creates a JavaScript bindings to native api to make js interface available from outside.</li>
+</ul>
+
+<h3 id="type-group-2-hybrid-web-apps">Type group #2: Hybrid-Web apps</h3>
+
+<ul>
+  <li><em>Hybrid-Web</em> frameworks uses a WebView as interlayer (we could simple said Chrome :) as an example framework would be <a href="https://ionicframework.com/">Ionic</a> or <a href="https://phonegap.com">PhoneGap</a>.</li>
+</ul>
+
+<p><img src="/assets/appdev-infographic.png" alt="App dev" title="App dev" /></p>
+
+<p>No matter what type of a hybrid app you will choose for development there some benefits and downsides.</p>
+
+<p>The main benefits in comparison with a native app are:</p>
+
+<ul>
+  <li>An ability to write an app ones. This gives a lot of other benefits like one code base, reduced cost of maintenance and development.</li>
+  <li>Allows us to use already known tools and approaches.</li>
+  <li>An app would be available would at the app store as native app.</li>
+</ul>
+
+<p>Downsides are:</p>
+<ul>
+  <li>Hard to customize</li>
+  <li>Always be slower than a native app</li>
+</ul>
+
+<h2 id="writing-code-with-react-native">Writing code with React Native</h2>
+
+<p><img src="/assets/react-native-831x467.png" alt="React Native" title="React Native" /></p>
+
+<p>I’m picked ReactNative because this one is closest to us - web developers. It uses JavaScript and React so no problems with that.</p>
+
+<p>We are going to build a stopwatch that could count rounds.
+This is how the working app looks:</p>
+
+<p><code class="language-plaintext highlighter-rouge">video: timer_app.mp4</code></p>
+
+<p>I’m not going deep into the code, you could go through one at github:</p>
+
+<p>https://github.com/slavik925/wrtimer</p>
+
+<h2 id="prerequisites-or-how-to-start">Prerequisites or how to start</h2>
+
+<p>First you need to setup an environment.</p>
+
+<p>I’m highly recommend you to start from the React Native getting started guide:
+https://facebook.github.io/react-native/docs/getting-started</p>
+
+<p>Initiating a new React Native project with typescript support:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npx react-native init AwesomeTSProject --template react-native-template-typescript
+</code></pre></div></div>
+
+<p>I suggest you to install Android SDK with the Android Virtual Device (AVD). You will need it later to build a release version of an app.</p>
+
+<p>To run the app run:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npx react-native run-android
+</code></pre></div></div>
+
+<h3 id="application-details">Application details</h3>
+
+<p>There are only two important files for us:</p>
+
+<ul>
+  <li>https://github.com/slavik925/wrtimer/blob/master/useStopWatch.tsx (<em>useStopWatch</em> react hook)</li>
+  <li>https://github.com/slavik925/wrtimer/blob/master/App.tsx (contains all the logic)</li>
+</ul>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="kd">const</span> <span class="nx">App</span><span class="p">:</span> <span class="nx">React</span><span class="p">.</span><span class="nx">FC</span> <span class="o">=</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="nx">useKeepAwake</span><span class="p">();</span>
+
+  <span class="kd">const</span> <span class="p">{</span> <span class="nx">start</span><span class="p">,</span> <span class="nx">stop</span><span class="p">,</span> <span class="nx">times</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">useStopWatch</span><span class="p">();</span>
+  <span class="kd">const</span> <span class="p">[</span><span class="nx">rounds</span><span class="p">,</span> <span class="nx">setRounds</span><span class="p">]</span> <span class="o">=</span> <span class="nx">useState</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+  <span class="kd">const</span> <span class="p">[</span><span class="nx">appState</span><span class="p">,</span> <span class="nx">setAppState</span><span class="p">]</span> <span class="o">=</span> <span class="nx">useState</span><span class="p">(</span><span class="nx">StopWatchState</span><span class="p">.</span><span class="nx">INITIAL</span><span class="p">);</span>
+
+  <span class="k">return</span> <span class="p">(</span>
+    <span class="o">&lt;</span><span class="nx">TouchableHighlight</span> <span class="nx">onPress</span><span class="o">=</span><span class="p">{</span><span class="nx">toggleAppState</span><span class="p">(</span><span class="nx">appState</span><span class="p">,</span> <span class="nx">setAppState</span><span class="p">,</span> <span class="nx">setRounds</span><span class="p">,</span> <span class="nx">start</span><span class="p">)}</span> <span class="nx">underlayColor</span><span class="o">=</span><span class="dl">"</span><span class="s2">white</span><span class="dl">"</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="nx">View</span> <span class="nx">style</span><span class="o">=</span> <span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="nx">View</span> <span class="nx">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">topBar</span><span class="p">}</span><span class="o">&gt;</span>
+          <span class="o">&lt;</span><span class="nx">TouchableOpacity</span> <span class="nx">onPress</span><span class="o">=</span><span class="p">{</span><span class="nx">BackHandler</span><span class="p">.</span><span class="nx">exitApp</span><span class="p">}</span><span class="o">&gt;</span>
+            <span class="p">{</span><span class="nx">IconPowerOff</span><span class="p">}</span>
+          <span class="o">&lt;</span><span class="sr">/TouchableOpacity</span><span class="err">&gt;
+</span>          <span class="o">&lt;</span><span class="nx">TouchableOpacity</span> <span class="nx">onPress</span><span class="o">=</span><span class="p">{</span><span class="nx">stopAndReset</span><span class="p">(</span><span class="nx">setAppState</span><span class="p">,</span> <span class="nx">setRounds</span><span class="p">,</span> <span class="nx">stop</span><span class="p">)}</span><span class="o">&gt;</span>
+            <span class="p">{</span><span class="nx">IconRefresh</span><span class="p">}</span>
+          <span class="o">&lt;</span><span class="sr">/TouchableOpacity</span><span class="err">&gt;
+</span>        <span class="o">&lt;</span><span class="sr">/View</span><span class="err">&gt;
+</span>        <span class="o">&lt;</span><span class="nx">View</span> <span class="nx">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">stats</span><span class="p">}</span><span class="o">&gt;</span>
+          <span class="o">&lt;</span><span class="nx">Text</span> <span class="nx">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">stopwatchTextMedium</span><span class="p">}</span><span class="o">&gt;</span><span class="na">Round</span><span class="p">:</span> <span class="p">{</span><span class="nx">rounds</span><span class="p">}</span><span class="o">&lt;</span><span class="sr">/Text</span><span class="err">&gt;
+</span>          <span class="o">&lt;</span><span class="nx">Text</span> <span class="nx">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">stopwatchText</span><span class="p">}</span><span class="o">&gt;</span><span class="p">{</span><span class="nx">format</span><span class="p">(</span><span class="nx">times</span><span class="p">)}</span><span class="o">&lt;</span><span class="sr">/Text</span><span class="err">&gt;
+</span>          <span class="o">&lt;</span><span class="nx">Text</span> <span class="nx">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">stopwatchStatus</span><span class="p">}</span><span class="o">&gt;</span><span class="p">{</span><span class="nx">getStatusText</span><span class="p">(</span><span class="nx">appState</span><span class="p">)}</span><span class="o">&lt;</span><span class="sr">/Text</span><span class="err">&gt;
+</span>        <span class="o">&lt;</span><span class="sr">/View</span><span class="err">&gt;
+</span>      <span class="o">&lt;</span><span class="sr">/View</span><span class="err">&gt;
+</span>    <span class="o">&lt;</span><span class="sr">/TouchableHighlight</span><span class="err">&gt;
+</span>  <span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>I’m using keepAwake hook to prevent the screen off while the app is running.</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">useKeepAwake</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">expo-keep-awake</span><span class="dl">"</span>
+</code></pre></div></div>
+
+<h2 id="building-and-installing-a-release-version">Building and installing a release version</h2>
+
+<p>It’s time to deploy our app to a phone. There is no reason to deploy it to store so all I want is to build an apk file and install it directly.</p>
+
+<p>Here we go:</p>
+
+<h4 id="step-1-building-a-release-version-of-our-app">Step 1: Building a release version of our app</h4>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd </span>android
+<span class="nv">$ </span>./gradlew bundleRelease
+</code></pre></div></div>
+
+<p>After this you could find generated ABB here
+<code class="language-plaintext highlighter-rouge">android/app/build/outputs/bundle/release/app.aab</code></p>
+
+<h4 id="step-2-create-an-apk-file">Step 2: Create an APK file</h4>
+
+<p><strong>bundletool</strong> will help us - https://github.com/google/bundletool</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>java <span class="nt">-jar</span> bundletool-all-0.12.0.jar build-apks <span class="nt">--bundle</span> /Users/me/projects/wrtimer/android/app/build/outputs/bundle/release/app.aab <span class="nt">--output</span><span class="o">=</span>/Users/me/projects/wrtimer/android/app/build/outputs/bundle/release/wrtimer.apks
+</code></pre></div></div>
+
+<h4 id="step-3-install-apk-to-your-phone">Step 3 Install APK to your phone</h4>
+
+<p>Connect you phone with debug mode enabled and run:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo java -jar bundletool-all-0.12.0.jar install-apks --apks=/Users/me/projects/wrtimer/android/app/build/outputs/bundle/release/wrtimer.apks
+</code></pre></div></div>
+
+<p>In case you wanted to try here you go a release version:</p>
+
+<p>https://github.com/slavik925/wrtimer/blob/master/wrtimer.apks</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>Writing a mobile application nowadays is much easier and entry threshold especially for web developers is low.</p>
+
+<p>By using hybrid frameworks it’s possible to write one app that runs on every major platform. Of course this is not something super new but in the current time this technologies are solid and proven to be production ready.</p>
+
+  </div><a class="u-url" href="/2020/01/14/writing-a-mobile-app-with-react-native.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Outofmemory</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Outofmemory</li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/slavik925"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">slavik925</span></a></li><li><a href="https://www.twitter.com/vhorodovych"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">vhorodovych</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p></p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

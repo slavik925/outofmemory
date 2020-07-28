@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Why developers need to track their architectural decisions | Outofmemory</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Why developers need to track their architectural decisions" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="The situation when developer is blaming the code and shouting: “Who the hell created this? Why we use XYZ library but not ZYZ? Let’s rewrite everything with RRR.”. This is familiar to most of the developers who are working on the large product. To avoid such kind of the questions and situations and to be able to give the reasonable answer it’s good to document all the decisions been made." />
+<meta property="og:description" content="The situation when developer is blaming the code and shouting: “Who the hell created this? Why we use XYZ library but not ZYZ? Let’s rewrite everything with RRR.”. This is familiar to most of the developers who are working on the large product. To avoid such kind of the questions and situations and to be able to give the reasonable answer it’s good to document all the decisions been made." />
+<link rel="canonical" href="https://outofmemory.dev/2020/02/14/why_developers_need_to_track_their_architecture_decisions.html" />
+<meta property="og:url" content="https://outofmemory.dev/2020/02/14/why_developers_need_to_track_their_architecture_decisions.html" />
+<meta property="og:site_name" content="Outofmemory" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-02-14T17:00:00+00:00" />
+<script type="application/ld+json">
+{"headline":"Why developers need to track their architectural decisions","dateModified":"2020-02-14T17:00:00+00:00","datePublished":"2020-02-14T17:00:00+00:00","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://outofmemory.dev/logo.svg"}},"mainEntityOfPage":{"@type":"WebPage","@id":"https://outofmemory.dev/2020/02/14/why_developers_need_to_track_their_architecture_decisions.html"},"url":"https://outofmemory.dev/2020/02/14/why_developers_need_to_track_their_architecture_decisions.html","description":"The situation when developer is blaming the code and shouting: “Who the hell created this? Why we use XYZ library but not ZYZ? Let’s rewrite everything with RRR.”. This is familiar to most of the developers who are working on the large product. To avoid such kind of the questions and situations and to be able to give the reasonable answer it’s good to document all the decisions been made.","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="https://outofmemory.dev/feed.xml" title="Outofmemory" /></head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" href="/">
+      
+        <img src="/logo.svg" class="site-logo" width="auto" height="56">
+        Outofmemory
+      
+    </a></div>
+</header><main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Why developers need to track their architectural decisions</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2020-02-14T17:00:00+00:00" itemprop="datePublished">Feb 14, 2020
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>The situation when developer is blaming the code and shouting: “Who the hell created this? Why we use XYZ library but not ZYZ? Let’s rewrite everything with RRR.”. This is familiar to most of the developers who are working on the large product. To avoid such kind of the questions and situations and to be able to give the reasonable answer it’s good to document all the decisions been made.</p>
+
+<h2 id="architectural-decision-ad">Architectural decision (AD)</h2>
+
+<p>In few words AD is a decision that could be hard to make and then costly is to change. When a new project is creating  the decisions for example could be: what technology stack to use or what business logic layer should contain, etc.? Each AD describes a design issue for which several solutions exist. AD contains a decision result (often collaborative) that clearly explains why this or that decision was made.</p>
+
+<p>AD could be captured in many different formats. One completed AD is called an architecture decision record (ADR). ADR is a document, a building block used to write ADs. The set of multiple ADRs forms architecture decision log called ADL.</p>
+
+<ul>
+  <li>AD: architecture decision</li>
+  <li>ADR: architecture decision record</li>
+  <li>ADL: architecture decision log</li>
+</ul>
+
+<h2 id="capturing-ads">Capturing ADs</h2>
+
+<p>There are multiple ways how AD could be captured. This could be a spreadsheet in a google drive or inside a code repository. There are plenty of different formats and layouts to doing this.</p>
+
+<p>I’m not going to invent the wheel and show the simplest and fastest way anybody could start from. ADRs going to be stored along with a code.</p>
+
+<p>As a template I will use the first one and default for adr-tools: <a href="&quot;https://github.com/joelparkerhenderson/architecture_decision_record/blob/master/adr_template_by_michael_nygard.md&quot;">ADR template by Michael Nygard</a>.</p>
+
+<h2 id="adr-template-by-michael-nygard">ADR template by Michael Nygard</h2>
+
+<p>Let’s look more close on the template itself:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+# Title
+
+## Status
+
+What is the status, such as proposed, accepted, rejected, deprecated, superseded, etc.?
+
+## Context
+
+What is the issue that we're seeing that is motivating this decision or change?
+
+## Decision
+
+What is the change that we're proposing and/or doing?
+
+## Consequences
+
+What becomes easier or more difficult to do because of this change?
+
+</code></pre></div></div>
+
+<p>This simple template allowing developer to store a single documented decision.</p>
+
+<h2 id="up-and-running">Up and running:</h2>
+
+<p>To manage ADRs there are some tools available. In this example I will use adr-tools.</p>
+
+<ol>
+  <li>Install <a href="https://github.com/npryce/adr-tools/blob/master/INSTALL.md">adr-tools</a></li>
+</ol>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>brew install adr-tools
+</code></pre></div></div>
+
+<ol>
+  <li>Create an ADR directory inside your project where you want to store ADRs.</li>
+</ol>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> adr init doc/architecture/decisions
+</code></pre></div></div>
+
+<ol>
+  <li>Now lets add first ADR:</li>
+</ol>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>adr new Create new frontend project with Create React App
+</code></pre></div></div>
+
+<p>Now in the initial directory first ADR appeared with name 0001-name.md</p>
+
+<p>This file has written in markdown and contains a template that you need to fill.</p>
+
+<ol>
+  <li>Now you could generate a TOC (table of content).</li>
+</ol>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>adr generate toc
+</code></pre></div></div>
+
+<p>After you generate a TOC it could be inserted into README.md or CHANGELOG.md for example.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>With ADR now it’s possible to look through all of your decision history.
+This is useful in a way to understand the project architecture and to stay up to date with the general developing path.</p>
+
+<p>Of course there are much more possibilities, approaches and libraries for you so you could try different templates and find what is suitable to your project.</p>
+
+<p>The goal of this article is just to let you know that something like this is exists and the basic understanding how this could be used.</p>
+
+<h2 id="additional-materials">Additional materials</h2>
+
+<ul>
+  <li>https://adr.github.io/</li>
+  <li>https://github.com/joelparkerhenderson/architecture_decision_record</li>
+  <li>Article by Michael Nygard http://thinkrelevance.com/blog/2011/11/15/documenting-architecture-decisions</li>
+</ul>
+
+  </div><a class="u-url" href="/2020/02/14/why_developers_need_to_track_their_architecture_decisions.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Outofmemory</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Outofmemory</li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/slavik925"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">slavik925</span></a></li><li><a href="https://www.twitter.com/vhorodovych"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">vhorodovych</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p></p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

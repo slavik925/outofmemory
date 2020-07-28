@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>New features of ECMAScript 2019/2020 | Outofmemory</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="New features of ECMAScript 2019/2020" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Understanding the naming" />
+<meta property="og:description" content="Understanding the naming" />
+<link rel="canonical" href="https://outofmemory.dev/2019/12/06/new_features_of_ecmascript_2019_2020.html" />
+<meta property="og:url" content="https://outofmemory.dev/2019/12/06/new_features_of_ecmascript_2019_2020.html" />
+<meta property="og:site_name" content="Outofmemory" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-12-06T16:05:00+00:00" />
+<script type="application/ld+json">
+{"headline":"New features of ECMAScript 2019/2020","dateModified":"2019-12-06T16:05:00+00:00","datePublished":"2019-12-06T16:05:00+00:00","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://outofmemory.dev/logo.svg"}},"mainEntityOfPage":{"@type":"WebPage","@id":"https://outofmemory.dev/2019/12/06/new_features_of_ecmascript_2019_2020.html"},"url":"https://outofmemory.dev/2019/12/06/new_features_of_ecmascript_2019_2020.html","description":"Understanding the naming","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="https://outofmemory.dev/feed.xml" title="Outofmemory" /></head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" href="/">
+      
+        <img src="/logo.svg" class="site-logo" width="auto" height="56">
+        Outofmemory
+      
+    </a></div>
+</header><main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">New features of ECMAScript 2019/2020</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2019-12-06T16:05:00+00:00" itemprop="datePublished">Dec 6, 2019
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h2 id="understanding-the-naming">Understanding the naming</h2>
+
+<p>The naming in JS world has always been something that confused me.
+ES6 and ES10 is that EScript? ECMAScript 2019 it this JavaScript or no? ts39 - what’s that about?</p>
+
+<p>So once for all lets deal with this names:</p>
+
+<p>ECMAScript (ES) - <a href="https://en.wikipedia.org/wiki/ECMAScript">Wiki</a></p>
+
+<ul>
+  <li>is a scripting-language specification standardized by Ecma International.</li>
+  <li>ECMA (European Computer Manufacturers Association) - is a standards organization for information and communication systems.</li>
+  <li>ECMAScript was created by Brendan Eich to standardize the JavaScript language (initially it was named Mocha, later LiveScript, and finally JavaScript).</li>
+</ul>
+
+<p>JavaScript (JS) - <a href="https://en.wikipedia.org/wiki/JavaScript">Wiki</a></p>
+
+<ul>
+  <li>High-level, just-in-time compiled programming language that conforms to the ECMAScript specification.</li>
+</ul>
+
+<p>TS39 is a group that is a part of ECMA organization.</p>
+
+<blockquote>
+  <p>is a group of JavaScript developers, implementers, academics, and more, collaborating with the community to maintain and evolve the definition of JavaScript.
+https://tc39.es/</p>
+</blockquote>
+
+<p>Now it should be clear who is who and what is what. :)</p>
+
+<h2 id="whats-new-do-we-have-in-the-es1011">What’s new do we have in the ES10/11?</h2>
+
+<p>The last 10th edition of the ECMAScript language specification is available here:</p>
+
+<p>https://www.ecma-international.org/ecma-262/10.0/index.html</p>
+
+<p>And here is the latest draft:</p>
+
+<p>https://tc39.es/ecma262/</p>
+
+<p>There aren’t a lot of the new additions. So lets focus on the most significant ones:</p>
+
+<p>ES2019</p>
+
+<ul>
+  <li>Object.fromEntries</li>
+  <li>String.trimming</li>
+  <li>Array.prototype.{flat, flatMap}</li>
+  <li>optional catch binding</li>
+  <li>Symbol.prototype.description</li>
+  <li>Function.prototype.toString revision</li>
+</ul>
+
+<p>ES2020</p>
+
+<ul>
+  <li>String.prototype.matchAll</li>
+  <li>BigInt</li>
+  <li>Promise.allSettled</li>
+  <li>globalThis</li>
+</ul>
+
+<p>Let’s walk through them briefly:</p>
+
+<h2 id="es2019-features-overview">ES2019 features overview</h2>
+
+<h3 id="objectfromentries">Object.fromEntries</h3>
+
+<p>This method takes a list of key-value pairs and returns a new object whose properties are given by those entries.</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">arr</span> <span class="o">=</span> <span class="p">[[</span><span class="dl">'</span><span class="s1">a</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">1</span><span class="dl">'</span><span class="p">],</span>  <span class="dl">'</span><span class="s1">b</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">2</span><span class="dl">'</span><span class="p">]];</span>
+<span class="kd">const</span> <span class="nx">obj</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">fromEntries</span><span class="p">(</span><span class="nx">arr</span><span class="p">);</span>
+
+<span class="c1">// Result: obj = { a: '1', b: '2' }</span>
+</code></pre></div></div>
+
+<p>The same will be true for the <code class="language-plaintext highlighter-rouge">Map</code>:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">arr</span> <span class="o">=</span> <span class="nb">Map</span><span class="p">([[</span><span class="dl">'</span><span class="s1">a</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">1</span><span class="dl">'</span><span class="p">],</span>  <span class="dl">'</span><span class="s1">b</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">2</span><span class="dl">'</span><span class="p">]]);</span>
+<span class="kd">const</span> <span class="nx">obj</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">fromEntries</span><span class="p">(</span><span class="nx">arr</span><span class="p">);</span>
+
+<span class="c1">// Result: obj = { a: '1', b: '2'}</span>
+</code></pre></div></div>
+
+<p>
+<small>
+Check current support at <a href="https://kangax.github.io/compat-table/es2016plus/#test-Object.fromEntries">https://kangax.github.io/compat-table/es2016plus/#test-Object.fromEntries</a>
+</small>
+</p>
+
+<hr />
+
+<h4 id="stringtrimming-trimstart-trimend">String.trimming (trimStart, trimEnd)</h4>
+
+<p>trimStart() - removes whitespace from the beginning of a string.</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">test</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">   This is a test string   </span><span class="dl">"</span>
+<span class="kd">const</span> <span class="nx">obj</span> <span class="o">=</span> <span class="nx">test</span><span class="p">.</span><span class="nx">trimStart</span><span class="p">()</span>
+
+<span class="c1">// Result: obj = 'This is a test string   ';</span>
+</code></pre></div></div>
+
+<p>trimEnd does the same but for the end of string. This functions has aliases:</p>
+
+<ul>
+  <li>String.trimLeft()</li>
+  <li>String.trimRight()</li>
+</ul>
+
+<p>
+<small>
+Check current support at <a href="https://kangax.github.io/compat-table/es2016plus/#test-string_trimming">https://kangax.github.io/compat-table/es2016plus/#test-string_trimming</a>
+</small>
+</p>
+
+<hr />
+
+<h3 id="arrayflat-flatmap">Array.{flat, flatMap}</h3>
+
+<ul>
+  <li>Array.flat(depth: int) - flattens the array with specified depth, it’s easier to show this on the example:</li>
+</ul>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">numbers</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]];</span>
+<span class="kd">const</span> <span class="nx">obj</span> <span class="o">=</span> <span class="nx">numbers</span><span class="p">.</span><span class="nx">flat</span><span class="p">();</span>
+<span class="c1">// Result: obj = [1, 2, 3, 4]</span>
+
+<span class="kd">const</span> <span class="nx">numbers</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]]];</span>
+<span class="kd">const</span> <span class="nx">numbers</span> <span class="o">=</span> <span class="nx">numbers</span><span class="p">.</span><span class="nx">flat</span><span class="p">();</span>
+<span class="c1">// Result: obj = [1, 2, 3, 4, [5, 6]]</span>
+
+<span class="kd">const</span> <span class="nx">numbers</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]]];</span>
+<span class="kd">const</span> <span class="nx">obj</span> <span class="o">=</span> <span class="kd">const</span> <span class="nx">numbers</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]]];</span>
+<span class="p">.</span><span class="nx">flat</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+<span class="c1">// Result: obj = [1, 2, 3, 4, 5, 6]</span>
+
+<span class="kd">const</span> <span class="nx">numbers</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">]]]]];</span>
+<span class="kd">const</span> <span class="nx">obj</span> <span class="o">=</span> <span class="nx">numbers</span><span class="p">.</span><span class="nx">flat</span><span class="p">(</span><span class="kc">Infinity</span><span class="p">);</span>
+<span class="c1">// Result: obj = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]</span>
+</code></pre></div></div>
+
+<ul>
+  <li>Array.flatMap(function(currentVal, index, array)) - first applies the given function to every array element and then ‘flat’s the result and inserts one in the new array. The same could be achieved by calling a <code class="language-plaintext highlighter-rouge">map</code> and then <code class="language-plaintext highlighter-rouge">flat</code> with depth = 1.</li>
+</ul>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">numbers</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+<span class="kd">const</span> <span class="nx">obj</span> <span class="o">=</span> <span class="nx">numbers</span><span class="p">.</span><span class="nx">flatMap</span><span class="p">(</span><span class="nx">x</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="nx">x</span> <span class="o">*</span> <span class="mi">2</span><span class="p">])</span>
+<span class="c1">// Result: obj = [2, 4, 6, 8]</span>
+</code></pre></div></div>
+
+<p>
+<small>
+Check current support at <a href="https://kangax.github.io/compat-table/es2016plus/#test-Array.prototype.{flat,_flatMap}">https://kangax.github.io/compat-table/es2016plus/#test-Array.prototype.{flat,_flatMap}</a>
+</small>
+</p>
+
+<hr />
+
+<h4 id="optional-catch-binding">Optional catch binding</h4>
+
+<p>If you are not using the exception argument inside a catch block you could avoid it now:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">try</span> <span class="p">{</span>
+  <span class="c1">//...</span>
+<span class="p">}</span> <span class="k">catch</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="dl">"</span><span class="s2">Ooops</span><span class="dl">"</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>
+<small>
+Check current support at <a href="https://kangax.github.io/compat-table/es2016plus/#test-optional_catch_binding">https://kangax.github.io/compat-table/es2016plus/#test-optional_catch_binding</a>
+</small>
+</p>
+
+<hr />
+
+<h4 id="symboldescription">Symbol.description</h4>
+
+<p>Now instead of calling <code class="language-plaintext highlighter-rouge">Symbol</code>.toString you could use description property. The main difference is that <code class="language-plaintext highlighter-rouge">description</code> property does not return stringified class name:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">obj</span> <span class="o">=</span> <span class="nb">Symbol</span><span class="p">(</span><span class="dl">"</span><span class="s2">Description</span><span class="dl">"</span><span class="p">)</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">obj</span><span class="p">.</span><span class="nx">description</span><span class="p">)</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">obj</span><span class="p">.</span><span class="nx">toString</span><span class="p">())</span>
+
+<span class="c1">// Result: 'Description'</span>
+<span class="c1">// Result: 'Symbol(Description)'</span>
+</code></pre></div></div>
+
+<p>
+<small>
+Check current support at <a href="https://kangax.github.io/compat-table/es2016plus/#test-Symbol.prototype.description">https://kangax.github.io/compat-table/es2016plus/#test-Symbol.prototype.description</a>
+</small>
+</p>
+
+<hr />
+
+<h2 id="es2020-features-overview">ES2020 features overview</h2>
+
+<h4 id="stringmatchall">String.matchAll</h4>
+
+<p>Returns and iterator of all results matching a string against a regular expression (including capturing groups).</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">regexp</span> <span class="o">=</span> <span class="sr">/t</span><span class="se">(</span><span class="sr">e</span><span class="se">)(</span><span class="sr">st</span><span class="se">(\d?))</span><span class="sr">/g</span>
+<span class="kd">const</span> <span class="nx">str</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">test1test2</span><span class="dl">"</span>
+
+<span class="kd">const</span> <span class="nx">obj</span> <span class="o">=</span> <span class="p">[...</span><span class="nx">str</span><span class="p">.</span><span class="nx">matchAll</span><span class="p">(</span><span class="nx">regexp</span><span class="p">)]</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">array</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="c1">// Result = ["test1", "e", "st1", "1"]</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">array</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="c1">// Result = ["test2", "e", "st2", "2"]</span>
+</code></pre></div></div>
+
+<p>
+<small>
+Check current support at <a href="https://kangax.github.io/compat-table/es2016plus/#test-String.prototype.matchAll">https://kangax.github.io/compat-table/es2016plus/#test-String.prototype.matchAll</a>
+</small>
+</p>
+
+<hr />
+
+<h4 id="bigint">BigInt</h4>
+
+<p>BigInt is a new 7th primitive type. Fixed number of varying length. You could create it with BigInt constructor of with <code class="language-plaintext highlighter-rouge">n</code> literal;</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">bigNumber</span> <span class="o">=</span> <span class="mi">9007199254740991</span><span class="nx">n</span>
+<span class="kd">const</span> <span class="nx">alsoHuge</span> <span class="o">=</span> <span class="nx">BigInt</span><span class="p">(</span><span class="mi">9007199254740991</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>
+<small>
+Check current support at <a href="https://kangax.github.io/compat-table/es2016plus/#test-BigInt">https://kangax.github.io/compat-table/es2016plus/#test-BigInt</a>
+</small>
+</p>
+
+<hr />
+
+<h4 id="promiseallsettled">Promise.allSettled</h4>
+
+<p>Returns a promise that resolves after all of the given promises have either resolved or rejected.</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">promise1</span> <span class="o">=</span> <span class="nb">Promise</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="kd">const</span> <span class="nx">promise2</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Promise</span><span class="p">((</span><span class="nx">resolve</span><span class="p">,</span> <span class="nx">reject</span><span class="p">)</span> <span class="o">=&gt;</span>
+  <span class="nx">setTimeout</span><span class="p">(</span><span class="nx">reject</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="dl">"</span><span class="s2">foo</span><span class="dl">"</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="kd">const</span> <span class="nx">promises</span> <span class="o">=</span> <span class="p">[</span><span class="nx">promise1</span><span class="p">,</span> <span class="nx">promise2</span><span class="p">]</span>
+
+<span class="nb">Promise</span><span class="p">.</span><span class="nx">allSettled</span><span class="p">(</span><span class="nx">promises</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="nx">results</span> <span class="o">=&gt;</span>
+  <span class="nx">results</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="nx">result</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">result</span><span class="p">.</span><span class="nx">status</span><span class="p">))</span>
+<span class="p">)</span>
+
+<span class="c1">// expected output:</span>
+<span class="c1">// "fulfilled"</span>
+<span class="c1">// "rejected"</span>
+</code></pre></div></div>
+
+<p>
+<small>
+Check current support at <a href="https://kangax.github.io/compat-table/es2016plus/#test-Promise.allSettled">https://kangax.github.io/compat-table/es2016plus/#test-Promise.allSettled</a>
+</small>
+</p>
+
+<hr />
+
+<h4 id="globalthis">globalThis</h4>
+
+<p>Not a lot to say here. This object was not standardized before ES11. Now it could be used directly without any hacks for different platforms.</p>
+
+<p>
+<small>
+Check current support at <a href="https://kangax.github.io/compat-table/es2016plus/#test-globalThis">https://kangax.github.io/compat-table/es2016plus/#test-globalThis</a>
+</small>
+</p>
+
+<hr />
+
+<h2 style="text-align: center">The End</h2>
+
+  </div><a class="u-url" href="/2019/12/06/new_features_of_ecmascript_2019_2020.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Outofmemory</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Outofmemory</li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/slavik925"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">slavik925</span></a></li><li><a href="https://www.twitter.com/vhorodovych"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">vhorodovych</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p></p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

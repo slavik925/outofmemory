@@ -1,0 +1,1419 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="https://outofmemory.dev/feed.xml" rel="self" type="application/atom+xml" /><link href="https://outofmemory.dev/" rel="alternate" type="text/html" /><updated>2020-07-28T20:51:40+00:00</updated><id>https://outofmemory.dev/feed.xml</id><title type="html">Outofmemory</title><subtitle></subtitle><entry><title type="html">Пробуем Deno</title><link href="https://outofmemory.dev/2020/07/21/lets-try-deno.html" rel="alternate" type="text/html" title="Пробуем Deno" /><published>2020-07-21T13:02:00+00:00</published><updated>2020-07-21T13:02:00+00:00</updated><id>https://outofmemory.dev/2020/07/21/lets-try-deno</id><content type="html" xml:base="https://outofmemory.dev/2020/07/21/lets-try-deno.html">&lt;p&gt;Джаваскрипт и бекенд, как по мне, понятия не совместимые, но все же, встречаем дено.&lt;/p&gt;
+
+&lt;p style=&quot;text-align: center&quot;&gt;
+&lt;img src=&quot;/assets/denoLogo.svg&quot; alt=&quot;drawing&quot; width=&quot;200&quot; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;Node и npm экосистема - главный образец показывающий на сколько джаваскрипт крут и то, как нужно делать качественный софт.
+Вот только, создатель посмотрел, почесал репу, и подумал здесь уже ничего не исправить, жги. И отжог, видимо как-то так и появился дено, который теперь убийца ноды, а npm вообще выбросили.&lt;/p&gt;
+
+&lt;h4 id=&quot;в-чём-принципиальные-отличия&quot;&gt;В чём принципиальные отличия?&lt;/h4&gt;
+&lt;p&gt;Ключевых на самом то деле не так уж и много:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Переписали все нативные байдинги на раст&lt;/li&gt;
+  &lt;li&gt;Выбросили пакетный менеджер (теперь можно просто воткнуть что угодно ссылкой)&lt;/li&gt;
+  &lt;li&gt;Из коробки можно запускать тайпскрипт&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Там, еще куча всего, но ценность этого всего весьма сомнительная:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;теперь по умолчанию нет доступа ни к чему пока явно не укажешь (сеть, файловая система и тп.)&lt;/li&gt;
+  &lt;li&gt;поставляется всё одним бинарником&lt;/li&gt;
+  &lt;li&gt;есть инспектор зависимостей и встроенный код форматер, КАРЛ!&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Вот это я понимаю 21 век. Я не особо нод разработчик, но прямо сказать, что продукт решает какую нибудь конкретную проблему весьма сложно. Больше всего это похоже на релиз “Node перезагрузка” чем на что-то действительно особенное.&lt;/p&gt;
+
+&lt;h4 id=&quot;давай-уже-там-писать-чего-тянуть-то&quot;&gt;Давай уже там писать, чего тянуть то.&lt;/h4&gt;
+
+&lt;p&gt;На момент написания статьи версия дено уже 1 с чем то там, что, как я считаю должно быть показателем довольно стабильного продукта.&lt;/p&gt;
+
+&lt;p&gt;Набросаем простую CLI app. Суть такая, запускаем с параметром -c “Страна”, софтина дергает апишку и возвращает количество covid кейсов за прошлые сутки для введенной станы.&lt;/p&gt;
+
+&lt;p&gt;Ставим дено на винду:&lt;/p&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;choco install deno
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;c-чего-начинается-разработка&quot;&gt;C чего начинается разработка?&lt;/h4&gt;
+
+&lt;p&gt;Правильная (у нас только такая) конечно же с тестирования, подумал я, и создал файлик с простым тестом.&lt;/p&gt;
+
+&lt;div class=&quot;language-typescript highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;assertEquals&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;https://deno.land/std/testing/asserts.ts&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;Deno&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;Should correctly parse country argument&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;assertEquals&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Давайте запустем и вн….имание, в ответ получаем:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;error: TS2345 [ERROR]: Argument of type '{ depth: number; sorted: boolean; trailingComma: boolean; compact: boolean; iterableLimit: number; }' is not assignable to parameter of type 'InspectOptions'.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Ну что ж, бывает. А в голове промелькнуло: интересно, а как на этом писать интеграционные тесты, бдд и вот это вот все. А как апишечку замокать для тестов? (Да и хер с этим всем, теперь везде лямбды на три сточки, серверлесс, может этих всех тестов и не нужно).&lt;/p&gt;
+
+&lt;p&gt;Раздосадованный я забиваю на тесты (это же джаваскрипт детка) и решаю писать так.
+Вот что получилось (не буду вдаваться в детали и так всё понятно):&lt;/p&gt;
+
+&lt;div class=&quot;language-typescript highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;clc&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;https://deno.land/x/color/index.ts&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;kr&quot;&gt;interface&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ICovidReportApp&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;nl&quot;&gt;country&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kr&quot;&gt;string&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;kr&quot;&gt;interface&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ICovidResponse&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;nl&quot;&gt;Country&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kr&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;nl&quot;&gt;CountryCode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kr&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;nl&quot;&gt;Cases&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kr&quot;&gt;number&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;nl&quot;&gt;Status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kr&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;getArg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;param&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kr&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt; &lt;span class=&quot;kr&quot;&gt;string&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;parameterIndex&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Deno&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;indexOf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;param&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;parameterIndex&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!==&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;parameterIndex&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Deno&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;// the parameter array will looks like ['-c', 'poland'] &lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;// so we need to take the next array item to get actual param value&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Deno&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;parameterIndex&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;async&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;country&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&quot;&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ICovidReportApp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;// Check if country is set&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;country&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;throw&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;County is not specified!&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;c1&quot;&gt;// Make the country name acceptable for api&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;// The api accept the country in specific format like 'south-africa'&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;countrySlug&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;country&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;toLowerCase&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;replaceAll&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; &lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+  &lt;span class=&quot;c1&quot;&gt;// API Need dates so put today and yesterday as dates to get ~24h of data&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;startDate&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Date&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;endDate&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Date&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+
+  &lt;span class=&quot;c1&quot;&gt;// Since the api doesn't bother a lot with time we just set it to 0 &lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;startDate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;setHours&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;endDate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;setHours&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;// And our end date will be the today - 1 day, this allows to get results for ~24h&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;startDate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;setDate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;endDate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getDate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+  &lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;queryString&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;`https://api.covid19api.com/country/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;countrySlug&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/status/confirmed?from=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;startDate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;toISOString&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;amp;to=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;endDate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;toISOString&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;try&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+
+    &lt;span class=&quot;c1&quot;&gt;// Fetch the data&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;res&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;await&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;fetch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;queryString&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;// Parse the data&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;resData&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ICovidResponse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;await&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;res&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;json&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+
+    &lt;span class=&quot;c1&quot;&gt;// Check if everything is ok&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;resData&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;res&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;status&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;200&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;resData&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;length&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; 
+      &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;No data was found!&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;covidCases&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;resData&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;reduce&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;cases&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;curr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;cases&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;curr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Cases&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;covidCasesRed&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;clc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;bgRed&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;covidCases&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;contryBlue&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;clc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;bgBlue&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;country&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+    &lt;span class=&quot;c1&quot;&gt;// Nice color output&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;`There are &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;covidCasesRed&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}${&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;clc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;reset&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; confirmed cases for last 24h in &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;contryBlue&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}${&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;clc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;reset&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;catch&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// Main entry point, parse the input args and pass into the function&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;country&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;getArg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;-c&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)});&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;https://gist.github.com/slavik925/5dacf1e6865409ea5eb4a5a39cdad42a&lt;/p&gt;
+
+&lt;p&gt;Для запуска:&lt;/p&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;deno run --allow-net covid24Report.ts -c “Germany”
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Output:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/coronaReport.png&quot; alt=&quot;Corona report&quot; title=&quot;Corona report&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;какой-вывод-можно-сделать&quot;&gt;Какой вывод можно сделать?&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Хреновый язык как был так и остался :)&lt;/li&gt;
+  &lt;li&gt;Никакого повода для миграции хотя бы с того же nodejs. Выглядит как шаг немного вперёд и в сторону, но всё равно выстрелит, ведь джаваскрипт это комьюнити построенное на хайпе и смене библиотек каждые 2 мясяца (А нода залежалась уже, да).&lt;/li&gt;
+  &lt;li&gt;Все также не хватает простого и стандартного функционала. Например для CLI аргументов, дат или ещё простых базовых вещей. Все нужно делать тонной сторонних библиотек и по концове в коробке из 1000 пазлов один какой-нибудь, как обычно, возьмёт да и потеряется.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Для сравнения можно взять такой же 25 летний руби и напедалить все тоже:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'getoptlong'&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'net/http'&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'json'&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'time'&lt;/span&gt;  
+&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'date'&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;opts&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;GetoptLong&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'--country'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'-c'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;GetoptLong&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;REQUIRED_ARGUMENT&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;country_slug&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;original_contry&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;opts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;opt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;arg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;opt&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;when&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'--country'&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;original_contry&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;arg&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;country_slug&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;arg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;downcase&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;gsub&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/\s/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;-&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;today_date&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Date&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;today&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to_time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;utc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;iso8601&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;yesterday_date&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Date&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;today&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;prev_day&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to_time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;utc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;iso8601&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;url&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;https://api.covid19api.com/country/&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;country_slug&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/status/confirmed?from=&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;yesterday_date&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;amp;to=&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;today_date&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;uri&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;URI&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;response&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Net&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;HTTP&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;uri&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;response_json&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;JSON&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;parse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;total_cases&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;response_json&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;reduce&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;casesSum&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;casesSum&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Cases'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;There are &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\e&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;[41m&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;total_cases&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\e&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;[0m confirmed cases for last 24h in  &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\e&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;[44m&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;original_contry&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;capitalize&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\e&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;[0m&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;https://gist.github.com/slavik925/778cd1f9c25013efb5832a5bd8a881d9&lt;/p&gt;
+
+&lt;p&gt;Все библиотеки встроенные, вышло проще, качественнее и красивее. При том что я вообще не рубист, ни разу :)&lt;/p&gt;
+
+&lt;p&gt;Скорость? Ха смешно, все ноют о какой-то иллюзорной скорости в мутных бенчмарках. Где она - я не знаю и никогда не видел.&lt;/p&gt;
+
+&lt;h4 id=&quot;итого&quot;&gt;Итого&lt;/h4&gt;
+
+&lt;p&gt;Если вы сприптодрочер и js/ts захватит мир - однозначно брать, пилить новые либы каждые 2 месяца, плакать, радоваться, всё как вы привыкли.&lt;/p&gt;
+
+&lt;p&gt;Если вы вменяем разраб и вам нужны инструменты для быстрой и качественной работы посмотрите в сторону лучше уж раста ну и всегда есть Ruby/Python/Java/C#/etc.&lt;/p&gt;
+
+&lt;p&gt;Сюда можно заглянуть только, так из интереса.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Все вышеизложенное это конечно же мои личные субъективные впечатления, возможно всё на самом деле не так :)&lt;/p&gt;
+&lt;/blockquote&gt;</content><author><name></name></author><category term="Deno" /><summary type="html">Джаваскрипт и бекенд, как по мне, понятия не совместимые, но все же, встречаем дено.</summary></entry><entry><title type="html">Why developers need to track their architectural decisions</title><link href="https://outofmemory.dev/2020/02/14/why_developers_need_to_track_their_architecture_decisions.html" rel="alternate" type="text/html" title="Why developers need to track their architectural decisions" /><published>2020-02-14T17:00:00+00:00</published><updated>2020-02-14T17:00:00+00:00</updated><id>https://outofmemory.dev/2020/02/14/why_developers_need_to_track_their_architecture_decisions</id><content type="html" xml:base="https://outofmemory.dev/2020/02/14/why_developers_need_to_track_their_architecture_decisions.html">&lt;p&gt;The situation when developer is blaming the code and shouting: “Who the hell created this? Why we use XYZ library but not ZYZ? Let’s rewrite everything with RRR.”. This is familiar to most of the developers who are working on the large product. To avoid such kind of the questions and situations and to be able to give the reasonable answer it’s good to document all the decisions been made.&lt;/p&gt;
+
+&lt;h2 id=&quot;architectural-decision-ad&quot;&gt;Architectural decision (AD)&lt;/h2&gt;
+
+&lt;p&gt;In few words AD is a decision that could be hard to make and then costly is to change. When a new project is creating  the decisions for example could be: what technology stack to use or what business logic layer should contain, etc.? Each AD describes a design issue for which several solutions exist. AD contains a decision result (often collaborative) that clearly explains why this or that decision was made.&lt;/p&gt;
+
+&lt;p&gt;AD could be captured in many different formats. One completed AD is called an architecture decision record (ADR). ADR is a document, a building block used to write ADs. The set of multiple ADRs forms architecture decision log called ADL.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;AD: architecture decision&lt;/li&gt;
+  &lt;li&gt;ADR: architecture decision record&lt;/li&gt;
+  &lt;li&gt;ADL: architecture decision log&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;capturing-ads&quot;&gt;Capturing ADs&lt;/h2&gt;
+
+&lt;p&gt;There are multiple ways how AD could be captured. This could be a spreadsheet in a google drive or inside a code repository. There are plenty of different formats and layouts to doing this.&lt;/p&gt;
+
+&lt;p&gt;I’m not going to invent the wheel and show the simplest and fastest way anybody could start from. ADRs going to be stored along with a code.&lt;/p&gt;
+
+&lt;p&gt;As a template I will use the first one and default for adr-tools: &lt;a href=&quot;&amp;quot;https://github.com/joelparkerhenderson/architecture_decision_record/blob/master/adr_template_by_michael_nygard.md&amp;quot;&quot;&gt;ADR template by Michael Nygard&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;adr-template-by-michael-nygard&quot;&gt;ADR template by Michael Nygard&lt;/h2&gt;
+
+&lt;p&gt;Let’s look more close on the template itself:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+# Title
+
+## Status
+
+What is the status, such as proposed, accepted, rejected, deprecated, superseded, etc.?
+
+## Context
+
+What is the issue that we're seeing that is motivating this decision or change?
+
+## Decision
+
+What is the change that we're proposing and/or doing?
+
+## Consequences
+
+What becomes easier or more difficult to do because of this change?
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This simple template allowing developer to store a single documented decision.&lt;/p&gt;
+
+&lt;h2 id=&quot;up-and-running&quot;&gt;Up and running:&lt;/h2&gt;
+
+&lt;p&gt;To manage ADRs there are some tools available. In this example I will use adr-tools.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Install &lt;a href=&quot;https://github.com/npryce/adr-tools/blob/master/INSTALL.md&quot;&gt;adr-tools&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;brew install adr-tools
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Create an ADR directory inside your project where you want to store ADRs.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; adr init doc/architecture/decisions
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Now lets add first ADR:&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;adr new Create new frontend project with Create React App
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Now in the initial directory first ADR appeared with name 0001-name.md&lt;/p&gt;
+
+&lt;p&gt;This file has written in markdown and contains a template that you need to fill.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Now you could generate a TOC (table of content).&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;adr generate toc
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;After you generate a TOC it could be inserted into README.md or CHANGELOG.md for example.&lt;/p&gt;
+
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;With ADR now it’s possible to look through all of your decision history.
+This is useful in a way to understand the project architecture and to stay up to date with the general developing path.&lt;/p&gt;
+
+&lt;p&gt;Of course there are much more possibilities, approaches and libraries for you so you could try different templates and find what is suitable to your project.&lt;/p&gt;
+
+&lt;p&gt;The goal of this article is just to let you know that something like this is exists and the basic understanding how this could be used.&lt;/p&gt;
+
+&lt;h2 id=&quot;additional-materials&quot;&gt;Additional materials&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;https://adr.github.io/&lt;/li&gt;
+  &lt;li&gt;https://github.com/joelparkerhenderson/architecture_decision_record&lt;/li&gt;
+  &lt;li&gt;Article by Michael Nygard http://thinkrelevance.com/blog/2011/11/15/documenting-architecture-decisions&lt;/li&gt;
+&lt;/ul&gt;</content><author><name></name></author><category term="Projects" /><summary type="html">The situation when developer is blaming the code and shouting: “Who the hell created this? Why we use XYZ library but not ZYZ? Let’s rewrite everything with RRR.”. This is familiar to most of the developers who are working on the large product. To avoid such kind of the questions and situations and to be able to give the reasonable answer it’s good to document all the decisions been made.</summary></entry><entry><title type="html">Writing a stopwatch and rounds counter mobile app with React Native</title><link href="https://outofmemory.dev/2020/01/14/writing-a-mobile-app-with-react-native.html" rel="alternate" type="text/html" title="Writing a stopwatch and rounds counter mobile app with React Native" /><published>2020-01-14T12:43:00+00:00</published><updated>2020-01-14T12:43:00+00:00</updated><id>https://outofmemory.dev/2020/01/14/writing-a-mobile-app-with-react-native</id><content type="html" xml:base="https://outofmemory.dev/2020/01/14/writing-a-mobile-app-with-react-native.html">&lt;p&gt;&lt;img src=&quot;/assets/concept-development-device-flat.jpg&quot; alt=&quot;Article title image&quot; title=&quot;Article title image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;In a gym I’m often need to track time of the exercise I’m doing. Rest time between the exercises and how many rounds I have completed already. The screen should be always awake while the app is running.&lt;/p&gt;
+
+&lt;p&gt;Imagine the following scenario:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;click start, then do exercise for 1 minute time or 10 reps&lt;/li&gt;
+  &lt;li&gt;then hit stop and rest for few minutes&lt;/li&gt;
+  &lt;li&gt;awesome, you did one round, now repeat&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;If you search for the ‘stopwatch’ or ‘fitness timer’, etc. in the GPlay/iStore you will definitely find many apps that doing this. But:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;All of them free one) contains ads&lt;/li&gt;
+  &lt;li&gt;They are always slightly different from what I actually need&lt;/li&gt;
+  &lt;li&gt;We are developers! We could write our own!&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;mobile-development-and-the-native-approach&quot;&gt;Mobile development and the native approach&lt;/h2&gt;
+
+&lt;p&gt;Every operation system has it’s own set of APIs available that are allowing to access a device resources. This is not an exception for the two most popular mobile operating systems - Android and iOS.&lt;/p&gt;
+
+&lt;p&gt;If you want do develop for Android - welcome to the Java world (or Kotlin)! Do you want to create nice UI? XML if your friend. So almost nothing in common with the web development ( except XML part :) ).&lt;/p&gt;
+
+&lt;p&gt;At the iOS side everything is the same except that instead of Java you will need to learn Swift and Swift UI.&lt;/p&gt;
+
+&lt;p&gt;If you are wanted to a get large audience you need to develop an application literally twice just to cover two major platforms! There are two completely separate worlds that are in separate universe and we with our web development are in our own universe.&lt;/p&gt;
+
+&lt;p&gt;So how could we join them together?&lt;/p&gt;
+
+&lt;h2 id=&quot;joining-the-web-development-and-the-mobile-development-together&quot;&gt;Joining the web development and the mobile development together&lt;/h2&gt;
+
+&lt;p&gt;People are not stupid (at least not all of them), no one’s wanted to do the same work twice. So what if we could grab the existing web apps and runs them on the phone? What do we need? Right, another level of abstraction.&lt;/p&gt;
+
+&lt;p&gt;The app written with web technologies are called &lt;em&gt;Hybrid&lt;/em&gt; and could be divided into two type groups.&lt;/p&gt;
+
+&lt;h3 id=&quot;type-group-1-hybrid-native-apps&quot;&gt;Type group #1: Hybrid-Native apps&lt;/h3&gt;
+
+&lt;p&gt;In this case our level of abstraction contains bindings to the native functions.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;em&gt;Hybrid-Native&lt;/em&gt; frameworks are &lt;a href=&quot;https://facebook.github.io/react-native&quot;&gt;ReactNative&lt;/a&gt;, &lt;a href=&quot;https://dotnet.microsoft.com/apps/xamarin&quot;&gt;Xamarin&lt;/a&gt;, &lt;a href=&quot;https://www.nativescript.org&quot;&gt;NativeScript&lt;/a&gt;, &lt;a href=&quot;https://flutter.dev/&quot;&gt;Flutter&lt;/a&gt;. They are all have it’s own  interlayer to communicate with a mobile OS. As an example ReactNative creates a JavaScript bindings to native api to make js interface available from outside.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;type-group-2-hybrid-web-apps&quot;&gt;Type group #2: Hybrid-Web apps&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;em&gt;Hybrid-Web&lt;/em&gt; frameworks uses a WebView as interlayer (we could simple said Chrome :) as an example framework would be &lt;a href=&quot;https://ionicframework.com/&quot;&gt;Ionic&lt;/a&gt; or &lt;a href=&quot;https://phonegap.com&quot;&gt;PhoneGap&lt;/a&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/appdev-infographic.png&quot; alt=&quot;App dev&quot; title=&quot;App dev&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;No matter what type of a hybrid app you will choose for development there some benefits and downsides.&lt;/p&gt;
+
+&lt;p&gt;The main benefits in comparison with a native app are:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;An ability to write an app ones. This gives a lot of other benefits like one code base, reduced cost of maintenance and development.&lt;/li&gt;
+  &lt;li&gt;Allows us to use already known tools and approaches.&lt;/li&gt;
+  &lt;li&gt;An app would be available would at the app store as native app.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Downsides are:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Hard to customize&lt;/li&gt;
+  &lt;li&gt;Always be slower than a native app&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;writing-code-with-react-native&quot;&gt;Writing code with React Native&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/react-native-831x467.png&quot; alt=&quot;React Native&quot; title=&quot;React Native&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;I’m picked ReactNative because this one is closest to us - web developers. It uses JavaScript and React so no problems with that.&lt;/p&gt;
+
+&lt;p&gt;We are going to build a stopwatch that could count rounds.
+This is how the working app looks:&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;video: timer_app.mp4&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;I’m not going deep into the code, you could go through one at github:&lt;/p&gt;
+
+&lt;p&gt;https://github.com/slavik925/wrtimer&lt;/p&gt;
+
+&lt;h2 id=&quot;prerequisites-or-how-to-start&quot;&gt;Prerequisites or how to start&lt;/h2&gt;
+
+&lt;p&gt;First you need to setup an environment.&lt;/p&gt;
+
+&lt;p&gt;I’m highly recommend you to start from the React Native getting started guide:
+https://facebook.github.io/react-native/docs/getting-started&lt;/p&gt;
+
+&lt;p&gt;Initiating a new React Native project with typescript support:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;npx react-native init AwesomeTSProject --template react-native-template-typescript
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;I suggest you to install Android SDK with the Android Virtual Device (AVD). You will need it later to build a release version of an app.&lt;/p&gt;
+
+&lt;p&gt;To run the app run:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;npx react-native run-android
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;application-details&quot;&gt;Application details&lt;/h3&gt;
+
+&lt;p&gt;There are only two important files for us:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;https://github.com/slavik925/wrtimer/blob/master/useStopWatch.tsx (&lt;em&gt;useStopWatch&lt;/em&gt; react hook)&lt;/li&gt;
+  &lt;li&gt;https://github.com/slavik925/wrtimer/blob/master/App.tsx (contains all the logic)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;App&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;React&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;FC&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;useKeepAwake&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+
+  &lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;start&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;stop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;times&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;useStopWatch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;rounds&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;setRounds&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;useState&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;appState&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;setAppState&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;useState&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;StopWatchState&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;INITIAL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;TouchableHighlight&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;onPress&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;toggleAppState&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;appState&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;setAppState&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;setRounds&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;start&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)}&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;underlayColor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;white&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;
+      &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;View&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;style&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;View&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;style&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;styles&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;topBar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;
+          &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;TouchableOpacity&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;onPress&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;BackHandler&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;exitApp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;IconPowerOff&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+          &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/TouchableOpacity&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
+&lt;/span&gt;          &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;TouchableOpacity&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;onPress&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;stopAndReset&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;setAppState&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;setRounds&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;stop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)}&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;IconRefresh&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+          &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/TouchableOpacity&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
+&lt;/span&gt;        &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/View&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
+&lt;/span&gt;        &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;View&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;style&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;styles&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;stats&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;
+          &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Text&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;style&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;styles&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;stopwatchTextMedium&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;Round&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;rounds&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/Text&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
+&lt;/span&gt;          &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Text&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;style&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;styles&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;stopwatchText&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;times&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)}&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/Text&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
+&lt;/span&gt;          &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Text&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;style&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;styles&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;stopwatchStatus&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getStatusText&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;appState&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)}&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/Text&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
+&lt;/span&gt;        &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/View&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
+&lt;/span&gt;      &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/View&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
+&lt;/span&gt;    &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/TouchableHighlight&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
+&lt;/span&gt;  &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;I’m using keepAwake hook to prevent the screen off while the app is running.&lt;/p&gt;
+
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;useKeepAwake&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;expo-keep-awake&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;building-and-installing-a-release-version&quot;&gt;Building and installing a release version&lt;/h2&gt;
+
+&lt;p&gt;It’s time to deploy our app to a phone. There is no reason to deploy it to store so all I want is to build an apk file and install it directly.&lt;/p&gt;
+
+&lt;p&gt;Here we go:&lt;/p&gt;
+
+&lt;h4 id=&quot;step-1-building-a-release-version-of-our-app&quot;&gt;Step 1: Building a release version of our app&lt;/h4&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;android
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;./gradlew bundleRelease
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;After this you could find generated ABB here
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;android/app/build/outputs/bundle/release/app.aab&lt;/code&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;step-2-create-an-apk-file&quot;&gt;Step 2: Create an APK file&lt;/h4&gt;
+
+&lt;p&gt;&lt;strong&gt;bundletool&lt;/strong&gt; will help us - https://github.com/google/bundletool&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;java &lt;span class=&quot;nt&quot;&gt;-jar&lt;/span&gt; bundletool-all-0.12.0.jar build-apks &lt;span class=&quot;nt&quot;&gt;--bundle&lt;/span&gt; /Users/me/projects/wrtimer/android/app/build/outputs/bundle/release/app.aab &lt;span class=&quot;nt&quot;&gt;--output&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/Users/me/projects/wrtimer/android/app/build/outputs/bundle/release/wrtimer.apks
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;step-3-install-apk-to-your-phone&quot;&gt;Step 3 Install APK to your phone&lt;/h4&gt;
+
+&lt;p&gt;Connect you phone with debug mode enabled and run:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo java -jar bundletool-all-0.12.0.jar install-apks --apks=/Users/me/projects/wrtimer/android/app/build/outputs/bundle/release/wrtimer.apks
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;In case you wanted to try here you go a release version:&lt;/p&gt;
+
+&lt;p&gt;https://github.com/slavik925/wrtimer/blob/master/wrtimer.apks&lt;/p&gt;
+
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Writing a mobile application nowadays is much easier and entry threshold especially for web developers is low.&lt;/p&gt;
+
+&lt;p&gt;By using hybrid frameworks it’s possible to write one app that runs on every major platform. Of course this is not something super new but in the current time this technologies are solid and proven to be production ready.&lt;/p&gt;</content><author><name></name></author><category term="ReactNative" /><category term="Mobile" /><category term="Projects" /><summary type="html"></summary></entry><entry><title type="html">New features of ECMAScript 2019/2020</title><link href="https://outofmemory.dev/2019/12/06/new_features_of_ecmascript_2019_2020.html" rel="alternate" type="text/html" title="New features of ECMAScript 2019/2020" /><published>2019-12-06T16:05:00+00:00</published><updated>2019-12-06T16:05:00+00:00</updated><id>https://outofmemory.dev/2019/12/06/new_features_of_ecmascript_2019_2020</id><content type="html" xml:base="https://outofmemory.dev/2019/12/06/new_features_of_ecmascript_2019_2020.html">&lt;h2 id=&quot;understanding-the-naming&quot;&gt;Understanding the naming&lt;/h2&gt;
+
+&lt;p&gt;The naming in JS world has always been something that confused me.
+ES6 and ES10 is that EScript? ECMAScript 2019 it this JavaScript or no? ts39 - what’s that about?&lt;/p&gt;
+
+&lt;p&gt;So once for all lets deal with this names:&lt;/p&gt;
+
+&lt;p&gt;ECMAScript (ES) - &lt;a href=&quot;https://en.wikipedia.org/wiki/ECMAScript&quot;&gt;Wiki&lt;/a&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;is a scripting-language specification standardized by Ecma International.&lt;/li&gt;
+  &lt;li&gt;ECMA (European Computer Manufacturers Association) - is a standards organization for information and communication systems.&lt;/li&gt;
+  &lt;li&gt;ECMAScript was created by Brendan Eich to standardize the JavaScript language (initially it was named Mocha, later LiveScript, and finally JavaScript).&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;JavaScript (JS) - &lt;a href=&quot;https://en.wikipedia.org/wiki/JavaScript&quot;&gt;Wiki&lt;/a&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;High-level, just-in-time compiled programming language that conforms to the ECMAScript specification.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;TS39 is a group that is a part of ECMA organization.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;is a group of JavaScript developers, implementers, academics, and more, collaborating with the community to maintain and evolve the definition of JavaScript.
+https://tc39.es/&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Now it should be clear who is who and what is what. :)&lt;/p&gt;
+
+&lt;h2 id=&quot;whats-new-do-we-have-in-the-es1011&quot;&gt;What’s new do we have in the ES10/11?&lt;/h2&gt;
+
+&lt;p&gt;The last 10th edition of the ECMAScript language specification is available here:&lt;/p&gt;
+
+&lt;p&gt;https://www.ecma-international.org/ecma-262/10.0/index.html&lt;/p&gt;
+
+&lt;p&gt;And here is the latest draft:&lt;/p&gt;
+
+&lt;p&gt;https://tc39.es/ecma262/&lt;/p&gt;
+
+&lt;p&gt;There aren’t a lot of the new additions. So lets focus on the most significant ones:&lt;/p&gt;
+
+&lt;p&gt;ES2019&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Object.fromEntries&lt;/li&gt;
+  &lt;li&gt;String.trimming&lt;/li&gt;
+  &lt;li&gt;Array.prototype.{flat, flatMap}&lt;/li&gt;
+  &lt;li&gt;optional catch binding&lt;/li&gt;
+  &lt;li&gt;Symbol.prototype.description&lt;/li&gt;
+  &lt;li&gt;Function.prototype.toString revision&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;ES2020&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;String.prototype.matchAll&lt;/li&gt;
+  &lt;li&gt;BigInt&lt;/li&gt;
+  &lt;li&gt;Promise.allSettled&lt;/li&gt;
+  &lt;li&gt;globalThis&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Let’s walk through them briefly:&lt;/p&gt;
+
+&lt;h2 id=&quot;es2019-features-overview&quot;&gt;ES2019 features overview&lt;/h2&gt;
+
+&lt;h3 id=&quot;objectfromentries&quot;&gt;Object.fromEntries&lt;/h3&gt;
+
+&lt;p&gt;This method takes a list of key-value pairs and returns a new object whose properties are given by those entries.&lt;/p&gt;
+
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;arr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[[&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;  &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]];&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;obj&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;fromEntries&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;arr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// Result: obj = { a: '1', b: '2' }&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The same will be true for the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Map&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;arr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Map&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([[&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;  &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]]);&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;obj&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;fromEntries&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;arr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// Result: obj = { a: '1', b: '2'}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;
+&lt;small&gt;
+Check current support at &lt;a href=&quot;https://kangax.github.io/compat-table/es2016plus/#test-Object.fromEntries&quot;&gt;https://kangax.github.io/compat-table/es2016plus/#test-Object.fromEntries&lt;/a&gt;
+&lt;/small&gt;
+&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h4 id=&quot;stringtrimming-trimstart-trimend&quot;&gt;String.trimming (trimStart, trimEnd)&lt;/h4&gt;
+
+&lt;p&gt;trimStart() - removes whitespace from the beginning of a string.&lt;/p&gt;
+
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;test&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;   This is a test string   &lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;obj&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;trimStart&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// Result: obj = 'This is a test string   ';&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;trimEnd does the same but for the end of string. This functions has aliases:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;String.trimLeft()&lt;/li&gt;
+  &lt;li&gt;String.trimRight()&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;
+&lt;small&gt;
+Check current support at &lt;a href=&quot;https://kangax.github.io/compat-table/es2016plus/#test-string_trimming&quot;&gt;https://kangax.github.io/compat-table/es2016plus/#test-string_trimming&lt;/a&gt;
+&lt;/small&gt;
+&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h3 id=&quot;arrayflat-flatmap&quot;&gt;Array.{flat, flatMap}&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Array.flat(depth: int) - flattens the array with specified depth, it’s easier to show this on the example:&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;numbers&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]];&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;obj&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;numbers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;flat&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// Result: obj = [1, 2, 3, 4]&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;numbers&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]]];&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;numbers&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;numbers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;flat&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// Result: obj = [1, 2, 3, 4, [5, 6]]&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;numbers&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]]];&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;obj&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;numbers&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]]];&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;flat&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// Result: obj = [1, 2, 3, 4, 5, 6]&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;numbers&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;7&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;9&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]]]]];&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;obj&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;numbers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;flat&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;Infinity&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// Result: obj = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Array.flatMap(function(currentVal, index, array)) - first applies the given function to every array element and then ‘flat’s the result and inserts one in the new array. The same could be achieved by calling a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;map&lt;/code&gt; and then &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;flat&lt;/code&gt; with depth = 1.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;numbers&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;obj&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;numbers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;flatMap&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// Result: obj = [2, 4, 6, 8]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;
+&lt;small&gt;
+Check current support at &lt;a href=&quot;https://kangax.github.io/compat-table/es2016plus/#test-Array.prototype.{flat,_flatMap}&quot;&gt;https://kangax.github.io/compat-table/es2016plus/#test-Array.prototype.{flat,_flatMap}&lt;/a&gt;
+&lt;/small&gt;
+&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h4 id=&quot;optional-catch-binding&quot;&gt;Optional catch binding&lt;/h4&gt;
+
+&lt;p&gt;If you are not using the exception argument inside a catch block you could avoid it now:&lt;/p&gt;
+
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;try&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;//...&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;catch&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;Ooops&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;
+&lt;small&gt;
+Check current support at &lt;a href=&quot;https://kangax.github.io/compat-table/es2016plus/#test-optional_catch_binding&quot;&gt;https://kangax.github.io/compat-table/es2016plus/#test-optional_catch_binding&lt;/a&gt;
+&lt;/small&gt;
+&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h4 id=&quot;symboldescription&quot;&gt;Symbol.description&lt;/h4&gt;
+
+&lt;p&gt;Now instead of calling &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Symbol&lt;/code&gt;.toString you could use description property. The main difference is that &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;description&lt;/code&gt; property does not return stringified class name:&lt;/p&gt;
+
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;obj&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Symbol&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;Description&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;obj&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;description&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;obj&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;toString&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// Result: 'Description'&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// Result: 'Symbol(Description)'&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;
+&lt;small&gt;
+Check current support at &lt;a href=&quot;https://kangax.github.io/compat-table/es2016plus/#test-Symbol.prototype.description&quot;&gt;https://kangax.github.io/compat-table/es2016plus/#test-Symbol.prototype.description&lt;/a&gt;
+&lt;/small&gt;
+&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h2 id=&quot;es2020-features-overview&quot;&gt;ES2020 features overview&lt;/h2&gt;
+
+&lt;h4 id=&quot;stringmatchall&quot;&gt;String.matchAll&lt;/h4&gt;
+
+&lt;p&gt;Returns and iterator of all results matching a string against a regular expression (including capturing groups).&lt;/p&gt;
+
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;regexp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/t&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;)(&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;st&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;(\d?))&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/g&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;str&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;test1test2&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;obj&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[...&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;matchAll&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;regexp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)]&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// Result = [&quot;test1&quot;, &quot;e&quot;, &quot;st1&quot;, &quot;1&quot;]&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// Result = [&quot;test2&quot;, &quot;e&quot;, &quot;st2&quot;, &quot;2&quot;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;
+&lt;small&gt;
+Check current support at &lt;a href=&quot;https://kangax.github.io/compat-table/es2016plus/#test-String.prototype.matchAll&quot;&gt;https://kangax.github.io/compat-table/es2016plus/#test-String.prototype.matchAll&lt;/a&gt;
+&lt;/small&gt;
+&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h4 id=&quot;bigint&quot;&gt;BigInt&lt;/h4&gt;
+
+&lt;p&gt;BigInt is a new 7th primitive type. Fixed number of varying length. You could create it with BigInt constructor of with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;n&lt;/code&gt; literal;&lt;/p&gt;
+
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;bigNumber&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;9007199254740991&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;n&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;alsoHuge&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;BigInt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;9007199254740991&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;
+&lt;small&gt;
+Check current support at &lt;a href=&quot;https://kangax.github.io/compat-table/es2016plus/#test-BigInt&quot;&gt;https://kangax.github.io/compat-table/es2016plus/#test-BigInt&lt;/a&gt;
+&lt;/small&gt;
+&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h4 id=&quot;promiseallsettled&quot;&gt;Promise.allSettled&lt;/h4&gt;
+
+&lt;p&gt;Returns a promise that resolves after all of the given promises have either resolved or rejected.&lt;/p&gt;
+
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;promise1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Promise&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;resolve&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;promise2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Promise&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;resolve&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;reject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;setTimeout&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;reject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;promises&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;promise1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;promise2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;Promise&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;allSettled&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;promises&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;then&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;results&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;results&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;forEach&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;result&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// expected output:&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// &quot;fulfilled&quot;&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// &quot;rejected&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;
+&lt;small&gt;
+Check current support at &lt;a href=&quot;https://kangax.github.io/compat-table/es2016plus/#test-Promise.allSettled&quot;&gt;https://kangax.github.io/compat-table/es2016plus/#test-Promise.allSettled&lt;/a&gt;
+&lt;/small&gt;
+&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h4 id=&quot;globalthis&quot;&gt;globalThis&lt;/h4&gt;
+
+&lt;p&gt;Not a lot to say here. This object was not standardized before ES11. Now it could be used directly without any hacks for different platforms.&lt;/p&gt;
+
+&lt;p&gt;
+&lt;small&gt;
+Check current support at &lt;a href=&quot;https://kangax.github.io/compat-table/es2016plus/#test-globalThis&quot;&gt;https://kangax.github.io/compat-table/es2016plus/#test-globalThis&lt;/a&gt;
+&lt;/small&gt;
+&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h2 style=&quot;text-align: center&quot;&gt;The End&lt;/h2&gt;</content><author><name></name></author><category term="JavaScript" /><summary type="html">Understanding the naming</summary></entry><entry><title type="html">Building chat with GraphQL server and React client.</title><link href="https://outofmemory.dev/2019/10/28/building-chat-graphql.html" rel="alternate" type="text/html" title="Building chat with GraphQL server and React client." /><published>2019-10-28T18:56:00+00:00</published><updated>2019-10-28T18:56:00+00:00</updated><id>https://outofmemory.dev/2019/10/28/building-chat-graphql</id><content type="html" xml:base="https://outofmemory.dev/2019/10/28/building-chat-graphql.html">&lt;p&gt;There are tons of different UI libraries and frameworks and often just to try a new one you ended up with “Hello world!” or simple TODO app.&lt;/p&gt;
+
+&lt;p&gt;I wanted something more complex but not too much. Look inside but don’t drown, see the framework from different angles. This could be level of documentation, support and integrations with other libraries, working with state/store, communication with the server, etc. But again I don’t want this to be to complex.&lt;/p&gt;
+
+&lt;p&gt;In my opinion the Chat application fits perfectly for this needs. So let’s build a simple chat server and a client.&lt;/p&gt;
+
+&lt;h2 id=&quot;graphql-chat-server&quot;&gt;Graphql Chat Server&lt;/h2&gt;
+
+&lt;p&gt;As a GraphQL server I choose &lt;a href=&quot;https://www.apollographql.com/docs/apollo-server/&quot;&gt;Apollo&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/apollo-logo.png&quot; alt=&quot;Apollo Logo&quot; title=&quot;Apollo logo&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Fist of all let create a graphql schema:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-gql&quot;&gt;
+  type User {
+    username: String!
+    password: String!
+  }
+
+  type Channel {
+    id: ID!
+    name: String!
+    messages: [Message]!
+  }
+
+  type Message {
+    user: User!
+    content: String!
+    createdAt: Float!
+  }
+
+  type Query {
+    channels: [Channel]
+    channel(id: ID!): Channel
+    currentUser: User
+  }
+
+  type Subscription {
+    messageAdded(channelId: ID!): Message
+  }
+
+  type LoginResponse {
+    token: String
+    user: User
+  }
+
+  type Mutation {
+    register(username: String!, password: String!): User!
+    login(username: String!, password: String!): LoginResponse!
+    createChannel(name: String!): Channel!
+    createMessage(channelId: ID!, content: String!): Message!
+  }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This is a very basic schema but it’s enough for now.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;User could register with an email and a password.&lt;/li&gt;
+  &lt;li&gt;Login with an email and a password.&lt;/li&gt;
+  &lt;li&gt;Fetch all available channels (Rooms) or create a new one.&lt;/li&gt;
+  &lt;li&gt;Write and send a new message to the channel.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;As small additional feature there is a Subscription called &lt;span style=&quot;color:coral&quot;&gt;messageAdded&lt;/span&gt;. Client could subscribe through GraphqlQL (WebSockets) and listen when there are new messages in the channel and refresh content accordingly.&lt;/p&gt;
+
+&lt;p&gt;There are no external storage connected which means all the values are stored in memory so all the information will be lost after server restart. (This part could be enhanced with Firebase or just by storing data in the file, etc.)&lt;/p&gt;
+
+&lt;p&gt;You could download server from here:
+https://github.com/slavik925/chat-graphql-server/&lt;/p&gt;
+
+&lt;h2 id=&quot;uiux-for-our-chat-app&quot;&gt;UI/UX for our Chat App&lt;/h2&gt;
+
+&lt;p&gt;I asked my wife if she is able to help me a bit with the UI part and this ended up in series of few nice mockup of our chat app.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/mockups-figma.png&quot; alt=&quot;Figma mockups&quot; title=&quot;Figma mockups&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;We got everything we need so let’s proceed and write the UI.&lt;/p&gt;
+
+&lt;h2 id=&quot;writing-the-client-on-react&quot;&gt;Writing the Client on React&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/react-logo.png&quot; alt=&quot;React Logo&quot; title=&quot;React logo&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;why-react&quot;&gt;Why React?&lt;/h3&gt;
+
+&lt;p&gt;It’s simple - because React is my main tool currently. But the idea is that in future I think to create something similar using the other libraries (Angular, Vue, Svelte, etc.) and it’s good to have something you know well to compare with then new things. Not just to imagine but to compare based on the real experience.&lt;/p&gt;
+&lt;h4 id=&quot;create-react-app&quot;&gt;Create React App&lt;/h4&gt;
+
+&lt;p&gt;To generate a new React App with typescript support run:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;npx create-react-app chat-app --typescript
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Then let’s add UI toolkit. I will be using &lt;a href=&quot;https://material-ui.com/&quot;&gt;Material UI&lt;/a&gt;.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;npm install @material-ui/core
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Also we will require &lt;a href=&quot;https://www.apollographql.com/docs/react/&quot;&gt;Apollo Client&lt;/a&gt;:&lt;/p&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;npm install apollo-client apollo-cache-inmemory apollo-link-http graphql-tag graphql --save
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;And the last important touch is &lt;a href=&quot;https://reacttraining.com/react-router/web/guides/quick-start&quot;&gt;React Router&lt;/a&gt; for the navigation:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;npm install react-router-dom
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This is ours base minimum.&lt;/p&gt;
+
+&lt;h3 id=&quot;communication-with-the-server&quot;&gt;Communication with the Server&lt;/h3&gt;
+
+&lt;p&gt;Setting up Apollo link to properly communicate with the API:&lt;/p&gt;
+
+&lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;authLink&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;setContext&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;_&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;headers&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;})&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;// get the authentication token from local storage if it exists&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;token&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;localStorage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getItem&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;token&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;// return the headers to the context so httpLink can read them&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;headers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;headers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;Authorization&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;token&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;?&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;`Bearer &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;token&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;`&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;''&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Next we will render our app wrapped with ApolloProvider:&lt;/p&gt;
+
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;client&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ApolloClient&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;link&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;cache&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;InMemoryCache&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+
+ &lt;span class=&quot;nx&quot;&gt;ReactDOM&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;render&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ApolloProvider&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;App&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&amp;gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/ApolloProvider&amp;gt;, document.getElementById&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;'root'&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;### Setting up the routes and main app&lt;/p&gt;
+
+&lt;p&gt;The App module itself is very straightforward .&lt;/p&gt;
+
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; &lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;App&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;loading&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;error&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;useQuery&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;CURRENT_USER&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;fetchPolicy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;network-only&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;loading&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;p&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Loading&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/p&amp;gt;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;;
+&lt;/span&gt;  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;p&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;Error&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/p&amp;gt;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;;
+&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;currentUser&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;currentUser&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;CurrentUserContext&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Provider&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;currentUser&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;
+      &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;MuiThemeProvider&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;theme&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;theme&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Router&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;
+          &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Route&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;component&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;currentUser&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;?&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;MainPage&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ChatPage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
+&lt;/span&gt;          &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;currentUser&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Route&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/register&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;component&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;RegisterPage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
+&lt;/span&gt;          &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/Router&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
+&lt;/span&gt;      &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/MuiThemeProvider&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
+&lt;/span&gt;    &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/CurrentUserContext.Provider&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
+&lt;/span&gt;  &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;We are fetching the current user and setting one in the React context.&lt;/p&gt;
+
+&lt;p&gt;Then wrapping everything with slightly modified react material ui theme (mostly colors).&lt;/p&gt;
+
+&lt;p&gt;And adding a route for registered user and rending Main page or Chat page depending if the user is logged in or no.&lt;/p&gt;
+
+&lt;h3 id=&quot;what-next&quot;&gt;What next?&lt;/h3&gt;
+
+&lt;p&gt;I’m not going to describe every piece, you could get browser client code from here - https://github.com/slavik925/chat-graphql-client.&lt;/p&gt;
+
+&lt;p&gt;There are a lot of things that could be done better. For example there are lack of tests, components could be divided better and the types are not everywhere. But it gives an idea how the app is written/look using the React library.&lt;/p&gt;
+
+&lt;p&gt;The whole point of this is to create a quick sketch to see how are you comfortable with the technology you’ve picked? What does it offers? How many problems have you faced? How easy you could solve this problems?&lt;/p&gt;
+
+&lt;p&gt;Here are the few pic how the Chat App looks.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/chat-app-main.png&quot; alt=&quot;Chat App Main Page&quot; title=&quot;Chat App Main Page&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/chat-app-register.png&quot; alt=&quot;Chat App Register Page&quot; title=&quot;Chat App Register Page&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/chat-app-chat.png&quot; alt=&quot;Chat App Chat Page&quot; title=&quot;Chat App Chat Page&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h3&gt;
+
+&lt;p&gt;I suggest you to grab the GraphqQL server and try to write something similar. Just pick any UI library you want to lear: Angular, Vue, Svelte, Handlebars or even on pure js.&lt;/p&gt;
+
+&lt;p&gt;Here are my few conclusion about react:&lt;/p&gt;
+
+&lt;p&gt;The main pros:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;It feels that you are wring normal HTML with JS, everything looks pretty naturally.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Create React app is an amazing starter with TS support out of the box and have placeholders almost for everything.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Apollo helps a lot by providing clients, hooks, etc.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Components are well isolated. You could separate everything. (Logic could be placed in the hooks for example).&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;CSS in JS - I like this, much faster, no need to produced additional files. And the component feels more complete of holding everything together.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;State could be managed with context across the app without any additional libs.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Some of the cons:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;You need to know what you are doing. If you create bad hierarchy of components you could refresh entire page just with a simple action intended for some small piece of UI.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Some times it gives to much granularity that leads to a lot of typing :). Want a handler for the input? Create a state, function, connect function to on change, pass the state update function. Have multiple inputs? Prepare to copy and paste. Don’t want to copy and paste? Create your own solution.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Next time I will try to write the same chat app but using other UI framework. Looking forward to see the results.&lt;/p&gt;</content><author><name></name></author><category term="JavaScript" /><category term="GraphQL" /><category term="Apollo" /><category term="Web" /><summary type="html">There are tons of different UI libraries and frameworks and often just to try a new one you ended up with “Hello world!” or simple TODO app.</summary></entry><entry><title type="html">Variable fonts in the Web</title><link href="https://outofmemory.dev/2019/10/21/variable-fonts-in-the-web.html" rel="alternate" type="text/html" title="Variable fonts in the Web" /><published>2019-10-21T13:00:00+00:00</published><updated>2019-10-21T13:00:00+00:00</updated><id>https://outofmemory.dev/2019/10/21/variable-fonts-in-the-web</id><content type="html" xml:base="https://outofmemory.dev/2019/10/21/variable-fonts-in-the-web.html">&lt;blockquote&gt;
+  &lt;p&gt;This article continues CSS/JS Conf Budapest 2019 series. Previous one was about &lt;a href=&quot;https://outofmemory.dev/drawing-in-css/&quot;&gt;Drawing in CSS - how and why?&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;into&quot;&gt;Into&lt;/h2&gt;
+
+&lt;p&gt;The year is almost &lt;em&gt;2020&lt;/em&gt; but still the dominant method of getting the information is text. The text consists of symbols and letters (or hieroglyphs). To represent the text on the web we are using fonts (typefaces).&lt;/p&gt;
+
+&lt;p&gt;In the early ages of the web, there was impossible to change default fonts on the web page until Netscape introduces the &lt;strong&gt;font&lt;/strong&gt; tag in &lt;em&gt;1995&lt;/em&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;how-does-the-font-represent-on-the-web&quot;&gt;How does the font represent on the Web?&lt;/h2&gt;
+
+&lt;p&gt;The font - is a file that contains all possible variations of letters, symbols, hieroglyphs, etc.&lt;/p&gt;
+
+&lt;p&gt;Here is an example of how Roboto typeface looks inside.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/roboto_char_set.png&quot; alt=&quot;Roboto Character Set&quot; title=&quot;Roboto Character Set&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Every webpage has a default font depending on your web browser and operating system. This means if you don’t specify the exact font for your web application you don’t know for sure how it might look for the end-user.&lt;/p&gt;
+
+&lt;p&gt;Besides this, the default font is not always a good choice if you want to increase readability and achieve good aesthetic appeal.&lt;/p&gt;
+
+&lt;h2 id=&quot;how-to-add-custom-font-into-the-web-page&quot;&gt;How to add custom font into the web page?&lt;/h2&gt;
+
+&lt;p&gt;The simplest way to include font from https://fonts.google.com/. But there are a lot of downsides such as limited variation of fonts and depending on 3rd party CDN. So I’m not going to cover this approach.&lt;/p&gt;
+
+&lt;p&gt;We will be including the custom font face file. First what you need is to choose between multiple fonts face file formats:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;SVG (yes it could be used as a font)&lt;/li&gt;
+  &lt;li&gt;EOT - Embedded OpenType&lt;/li&gt;
+  &lt;li&gt;OTF - OpenType&lt;/li&gt;
+  &lt;li&gt;TTF - TrueType&lt;/li&gt;
+  &lt;li&gt;WOFF/WOFF2 - Web Open Font format&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Currently, the web moves to WOFF/WOFF2 file types. They are developed especially for the web by Mozilla.&lt;/p&gt;
+
+&lt;p&gt;WOFF2 has full browser support (almost except IE).&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/caniuse_woff2.png&quot; alt=&quot;WOFF2 browser support&quot; title=&quot;WOFF2 browser support&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;you-got-your-font---what-next&quot;&gt;You got your font - what next?&lt;/h2&gt;
+
+&lt;p&gt;After you could include it with font-face property in CSS and you are ready to use it.&lt;/p&gt;
+
+&lt;div class=&quot;language-css highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;@font-face&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;nl&quot;&gt;font-family&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;FontName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;nl&quot;&gt;src&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;sx&quot;&gt;url('path/filename.woff2')&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;'woff2'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+    &lt;span class=&quot;sx&quot;&gt;url('path/filename.woff')&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;'woff'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;font-variants-and-what-this-all-about&quot;&gt;Font variants and what this all about.&lt;/h2&gt;
+
+&lt;p&gt;After you include the font you will start to style your text. Add bold heading, change the font weight, start to emphasize text with italic style.&lt;/p&gt;
+
+&lt;p&gt;Here is where the problems start. For every additional style or the font-weight, you actually need to include a separate typeface file!&lt;/p&gt;
+
+&lt;p&gt;Here, for example, all of the variations of Roboto font.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/roboto_variations.png&quot; alt=&quot;Roboto font variations&quot; title=&quot;Roboto font variations&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;variable-fonts-and-how-they-solve-our-problems&quot;&gt;Variable fonts and how they solve our problems.&lt;/h3&gt;
+
+&lt;p&gt;To optimize this we have a relatively new technology called - Variable Fonts. It includes all the type variations into a single file!&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/vf_file_concept.png&quot; alt=&quot;Font file structure&quot; title=&quot;Font file structure&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;To use Variable Font first you need to find a typeface you want and then find it variable font version. Typically it has &lt;strong&gt;VF&lt;/strong&gt; suffix in the font name (e.g., &lt;em&gt;AmstelvarAlpha-VF.woff2&lt;/em&gt;). And that’s it.&lt;/p&gt;
+
+&lt;p&gt;You could see how the variable font could do the CSS really awesome:&lt;/p&gt;
+
+&lt;p data-embed-version=&quot;2&quot; data-height=&quot;300&quot; data-preview=&quot;false&quot; data-theme-id=&quot;11473&quot; data-default-tab=&quot;result&quot; data-user=&quot;mandymichael&quot; data-slug-hash=&quot;vYYLByj&quot; class=&quot;codepen&quot;&gt;See the &lt;a href=&quot;https://codepen.io/mandymichael/pen/vYYLByj&quot;&gt;pen&lt;/a&gt; on &lt;a href=&quot;//codepen.io&quot;&gt;CodePen&lt;/a&gt;.&lt;/p&gt;
+&lt;script async=&quot;&quot; src=&quot;https://production-assets.codepen.io/assets/embed/ei.js&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;The good article explaining in deep how the variable font technology works - https://developers.google.com/web/fundamentals/design-and-ux/typography/variable-fonts.&lt;/p&gt;
+
+&lt;p&gt;The main idea are in axis and how the font properties distributed between them.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/variable_fonts_venn_weight_axis_width_axis.png&quot; alt=&quot;Varaible font axis&quot; title=&quot;Font file structure&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This technology has support of all the modern browsers so it could be used freely.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/caniuse_woff2.png&quot; alt=&quot;Variable font support&quot; title=&quot;Variable font support&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion.&lt;/h2&gt;
+
+&lt;p&gt;If your web application has rich typography use of the Variable Fonts is a good choice.&lt;/p&gt;
+
+&lt;p&gt;An additional extra would be the animation possibilities that you could apply to the variable font.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/variable_font_animation.gif&quot; alt=&quot;Variable font animation&quot; title=&quot;Variable font animations&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Variable fonts playgrounds:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;https://www.axis-praxis.org&lt;/li&gt;
+  &lt;li&gt;https://v-fonts.com&lt;/li&gt;
+&lt;/ul&gt;</content><author><name></name></author><category term="Fonts" /><category term="Web" /><summary type="html">This article continues CSS/JS Conf Budapest 2019 series. Previous one was about Drawing in CSS - how and why?</summary></entry><entry><title type="html">Как развернуть свой проект и не стать devops’ом: дружим heroku с cloudflare.</title><link href="https://outofmemory.dev/2019/10/08/deploy-at-heroku-and-cloudflare.html" rel="alternate" type="text/html" title="Как развернуть свой проект и не стать devops’ом: дружим heroku с cloudflare." /><published>2019-10-08T12:00:00+00:00</published><updated>2019-10-08T12:00:00+00:00</updated><id>https://outofmemory.dev/2019/10/08/deploy-at-heroku-and-cloudflare</id><content type="html" xml:base="https://outofmemory.dev/2019/10/08/deploy-at-heroku-and-cloudflare.html">&lt;h4 id=&quot;tldr&quot;&gt;TL;DR&lt;/h4&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Главная фишка в том, как можно бесплатно прикрутить SSL на heroku. Также немного рассказал, как перенёс все с digitalocean на heroku, да еще и за бесплатно прикрутил SSL.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;начало&quot;&gt;Начало&lt;/h3&gt;
+
+&lt;p&gt;Начнём с обычной ситуации начинающего стартапера: ты пилишь свой продукт, доменное имя уже куплено, репозитории созданы, команда пыхтит и что-то там накодано. Пришло время показать достигнутый результат пользователям/инвесторам.&lt;/p&gt;
+
+&lt;p&gt;Мы конечно же кул хацкеры и всё можем сделать сами. Берем digitalocean и поехали.&lt;/p&gt;
+
+&lt;h4 id=&quot;что-могло-пойти-не-совсем-так&quot;&gt;Что, могло пойти не совсем так?&lt;/h4&gt;
+
+&lt;p&gt;И так, всего за 10$ ты получаешь «дроплет» с 2гб RAM и сколько-то там места на HDD.&lt;/p&gt;
+
+&lt;p&gt;Вот оно, счастье совсем близко, осталось задеплоить проект и…
+Ах да задеплоить, только вот деплоить не особо есть куда так, как у нас голый линукс.&lt;/p&gt;
+
+&lt;h4 id=&quot;digitalocean-или-сам-себе-devops&quot;&gt;Digitalocean или сам себе devops.&lt;/h4&gt;
+
+&lt;p&gt;Проект написан на Rails и оказалось, что просто скопировать все файлы на дроплет не вариант :).&lt;/p&gt;
+
+&lt;p&gt;Не буду вдаваться во все подробности (тут можно отдельно три статьи ещё написать) но, как оказалось настраивать нужно довольно много и практически всё через возню с консолью.&lt;/p&gt;
+
+&lt;p&gt;Коротко, в настройку входило:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;настройка самого «дроплета» (пользователи, ssh, ключи, файрвол, ruby, etc)&lt;/li&gt;
+  &lt;li&gt;capistrano для деплоя Rails&lt;/li&gt;
+  &lt;li&gt;nginx (риверс прокси)&lt;/li&gt;
+  &lt;li&gt;letsencrypt для ssl&lt;/li&gt;
+  &lt;li&gt;postgresql&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;За этим всем приходиться постоянно смотреть, переодически накатывая последние апдейты, делая перезагрузки и мониторя логи.&lt;/p&gt;
+
+&lt;p&gt;На саму настройку всего этого добра суммарно ушло несколько недель. А в случае проблем делаешь bash history и смотришь, где вообще что, лежит и что, ты там вообще последний раз делал. Даже само обновление версии ruby то ещё приключение.&lt;/p&gt;
+
+&lt;p&gt;Хорошо если бы этими вещами занялся кто-то, а ещё лучше автоматизировать весь процесс. Лень писать скрипты и заниматься этим всем самому, а искать специального человека - не дешево.&lt;/p&gt;
+
+&lt;h3 id=&quot;heroku-приходить-на-помощь&quot;&gt;Heroku приходить на помощь.&lt;/h3&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Heroku — облачная PaaS-платформа, поддерживающая ряд языков программирования.&lt;/p&gt;
+
+  &lt;p&gt;https://ru.wikipedia.org/wiki/Heroku&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;В перспективе возможно не самое дешевое решение, но мы воспользуемся бесплатной опцией.&lt;/p&gt;
+
+&lt;p&gt;И так что нужно? Регистрируемся, затем вписываем название нашей аппликации и получаем “ссылку на репозиторий”, затем пушаем туда свой код и всё.
+Как всё? Вот так, всё.&lt;/p&gt;
+
+&lt;p&gt;В моем случае с Rails приложение собралось и сразу стало доступно по адресу - 
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;app-name.herokuapp.com&lt;/code&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;счастье-близко---но-есть-нюанс&quot;&gt;Счастье близко - но есть нюанс&lt;/h4&gt;
+
+&lt;p&gt;Heroku не предоставляет возможности работы с почтой, файлами и базой данных из коробки. Поэтому кое-что настроить всё-таки придется.&lt;/p&gt;
+
+&lt;p&gt;Почти все дополнительные вещи в heroku настраиваются через &lt;a href=&quot;https://elements.heroku.com/addons&quot;&gt;аддоны&lt;/a&gt;. 
+Для базы данных мне понадобился &lt;a href=&quot;https://elements.heroku.com/addons/heroku-postgresql&quot;&gt;heroku-postgresql&lt;/a&gt;, а для почты &lt;a href=&quot;https://elements.heroku.com/addons/mailgun&quot;&gt;mailgun&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;К слову, бесплатная версия &lt;a href=&quot;https://elements.heroku.com/addons/heroku-postgresql&quot;&gt;heroku-postgresql&lt;/a&gt; позволяет сохранять до 10000 тысяч строк.&lt;/p&gt;
+
+&lt;p&gt;А для файлов вообще можно обойтись без аддона, отлично подойдет &lt;a href=&quot;https://aws.amazon.com/s3/&quot;&gt;Amazon S3&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;самая-интересная-часть-goddaddy--heroku--ssl&quot;&gt;Самая интересная часть (Goddaddy &amp;amp; Heroku &amp;amp; SSL)&lt;/h3&gt;
+
+&lt;p&gt;У нас в распоряжении уже был домен, который нужно было прикрутить, а сам процесс подключения домена хорошо описан в доке:
+https://devcenter.heroku.com/articles/custom-domains&lt;/p&gt;
+
+&lt;p&gt;Добавляем домен к heroku:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/heroku_domains.png&quot; alt=&quot;Domains added to Heroku&quot; title=&quot;Domains added to Heroku&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Но, к сожалению, (и моему удивлению) heroku не имеет постоянного IP адреса, что означало невозможность указать в godaddy запись типа «А» чтоб всё просто заработало из коробки.&lt;/p&gt;
+
+&lt;p&gt;Ну что-ж подумал я, мы же всё ещё хацкеры - делаем редирект.&lt;/p&gt;
+
+&lt;p&gt;Быстро настраиваем редирект с godaddy на наш herokuapp и все бы классно, но SSL мать его! Конечно же при таком редиректе всё переставало работать через https. Как оказалось нужно покупать ещё и SSL сертификат у godaddy.
+“Это фиаско, братан” - продумал я.&lt;/p&gt;
+
+&lt;h3 id=&quot;как-использовать-бесплатный-ssl-от-heroku-и-cloudflare&quot;&gt;Как использовать бесплатный SSL от Heroku и Cloudflare.&lt;/h3&gt;
+
+&lt;p&gt;Пройдя не одну поисковую выдачу в «утка-утка иди» и перелопатив кучу статей на «среднем» я таки нашёл возможность.&lt;/p&gt;
+
+&lt;p&gt;Этой возможностью стал &lt;a href=&quot;https://www.cloudflare.com/&quot;&gt;Cloudflare&lt;/a&gt;. Он дает бесплатный SSL сертификат и может полностью принять на себе управление доменом.&lt;/p&gt;
+
+&lt;p&gt;Так, как по умолчанию наш &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;app.herokuapp.com&lt;/code&gt; уже имеет дефолтный SSL сертификат, мы можем его использовать, подключив только cloudflare.&lt;/p&gt;
+
+&lt;p&gt;Дело за малым, регаемся на cloudflare. Далее в godaddy поинтим неймспейси на cloudflrare:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/godaddy_nameservers_config.png&quot; alt=&quot;Godaddy pointing namespaces to cloudsflare&quot; title=&quot;Godaddy pointing namespaces to cloudsflare&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Там в свою очередь импортируем все DNS записи и добавляем необходимые:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/cloudflare_dns_config.png&quot; alt=&quot;Cloudflare config dns&quot; title=&quot;Cloudflare config dns&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Врубаем SSL:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/cloudflare_ssl.png&quot; alt=&quot;Cloudflare enable ssl&quot; title=&quot;Cloudflare enable ssl&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;итог&quot;&gt;Итог&lt;/h3&gt;
+
+&lt;p&gt;Теперь при заходе на https://ltube.net и на https://ww.ltube.net - cloudflare будет проксировать на https://ltube.herokuapps.com (используя SSL).&lt;/p&gt;
+
+&lt;p&gt;В итоге главная цель достигнута - используя heroku абсолютно не нужно заниматься долгой и мучительной конфигурацией инстанции сервисов и тп. Пушнул и деплой пошёл. Ну и всё за бесплатно.&lt;/p&gt;
+
+&lt;p&gt;Основной минус — это цена. При масштабировании все этого добра придётся платить за каждый сервис отдельно: за базу, S3, heroku. Но мне, кажется, это всё равно дешевле чем менеджить целый дроплет, да и масштабироваться на порядок легче.&lt;/p&gt;</content><author><name></name></author><category term="Heroku" /><category term="DevOps" /><category term="Cloudflare" /><category term="DNS" /><summary type="html">TL;DR</summary></entry><entry><title type="html">Drawing in CSS - how and why?</title><link href="https://outofmemory.dev/2019/09/30/drawing-in-css.html" rel="alternate" type="text/html" title="Drawing in CSS - how and why?" /><published>2019-09-30T16:00:00+00:00</published><updated>2019-09-30T16:00:00+00:00</updated><id>https://outofmemory.dev/2019/09/30/drawing-in-css</id><content type="html" xml:base="https://outofmemory.dev/2019/09/30/drawing-in-css.html">&lt;p&gt;This is a first article in a short series inspired by CSS/JS Conf 2019 at Budapest.&lt;/p&gt;
+
+&lt;p&gt;The very first topic there was presented by Giulia Cardieri https://twitter.com/ggiulia - “CSS Games and Drawings in the real world: useful or just fun” which was actually quite inspiring.&lt;/p&gt;
+
+&lt;p&gt;The main idea is to bring more attention to CSS drawing capabilities, get some fun and experience while coding in CSS not in a usual manner.&lt;/p&gt;
+
+&lt;p&gt;You can familiarize with one of her projects written just for fun called &lt;a href=&quot;http://dinokiki.com&quot;&gt;Dinokiki&lt;/a&gt; (be careful with the sound).&lt;/p&gt;
+
+&lt;p&gt;And just look into this nice Peppa Pig created only with the CSS:&lt;/p&gt;
+
+&lt;p data-embed-version=&quot;2&quot; data-height=&quot;300&quot; data-preview=&quot;false&quot; data-theme-id=&quot;11473&quot; data-default-tab=&quot;result&quot; data-user=&quot;marcindotka&quot; data-slug-hash=&quot;GrrKYE&quot; class=&quot;codepen&quot;&gt;See the &lt;a href=&quot;https://codepen.io/marcindotka/pen/GrrKYE&quot;&gt;pen&lt;/a&gt; on &lt;a href=&quot;//codepen.io&quot;&gt;CodePen&lt;/a&gt;.&lt;/p&gt;
+&lt;script async=&quot;&quot; src=&quot;https://production-assets.codepen.io/assets/embed/ei.js&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;But the most inspiring for me was this Planets game written only using HTML/CSS features with no Java Script at all! Moreover the game handle clicks on the cards and even has a simple logic to track whether you win or not.&lt;/p&gt;
+
+&lt;p data-embed-version=&quot;2&quot; data-height=&quot;300&quot; data-preview=&quot;false&quot; data-theme-id=&quot;11473&quot; data-default-tab=&quot;result&quot; data-user=&quot;giuliacardieri&quot; data-slug-hash=&quot;XYOZom&quot; class=&quot;codepen&quot;&gt;See the &lt;a href=&quot;https://codepen.io/giuliacardieri/pen/XYOZom&quot;&gt;pen&lt;/a&gt; on &lt;a href=&quot;//codepen.io&quot;&gt;CodePen&lt;/a&gt;.&lt;/p&gt;
+&lt;script async=&quot;&quot; src=&quot;https://production-assets.codepen.io/assets/embed/ei.js&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;Looks awesome right?&lt;/p&gt;
+
+&lt;p&gt;But how do you manage clicks and responds to events without JS? The code and technic is pretty clever - just to use styled check box. When it is checked - show one state otherwise another.&lt;/p&gt;
+
+&lt;h3 id=&quot;but-why&quot;&gt;But why?&lt;/h3&gt;
+&lt;p&gt;Here are few points:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;develop creativity&lt;/li&gt;
+  &lt;li&gt;extend you knowledge of CSS&lt;/li&gt;
+  &lt;li&gt;get some fun!&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;but-how&quot;&gt;But how?&lt;/h3&gt;
+
+&lt;p&gt;If you are struggling on how to start, first you need to select something that you want to draw.
+If your CSS knowledge is limited I recommend you to start from something simple.&lt;/p&gt;
+
+&lt;p&gt;Try to draw a simple logo (Chrome e.g), flower (🌼, 🌻), car (🚓, 🚗), clock(⏱️, ⏰), etc.&lt;/p&gt;
+
+&lt;p&gt;Then follow this steps:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Break the drawing into simple geometric forms.&lt;/li&gt;
+  &lt;li&gt;Use HTML to represent pieces of the drawing.&lt;/li&gt;
+  &lt;li&gt;Use CSS to style and position each piece.&lt;/li&gt;
+  &lt;li&gt;Repeat from step one if needed.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;In my example I have started to draw the logo of the company where I’m working at:&lt;/p&gt;
+
+&lt;p data-embed-version=&quot;2&quot; data-height=&quot;300&quot; data-preview=&quot;false&quot; data-theme-id=&quot;11473&quot; data-default-tab=&quot;result&quot; data-user=&quot;slavik925&quot; data-slug-hash=&quot;BaBEzPL&quot; class=&quot;codepen&quot;&gt;See the &lt;a href=&quot;https://codepen.io/slavik925/pen/BaBEzPL&quot;&gt;pen&lt;/a&gt; on &lt;a href=&quot;//codepen.io&quot;&gt;CodePen&lt;/a&gt;.&lt;/p&gt;
+&lt;script async=&quot;&quot; src=&quot;https://production-assets.codepen.io/assets/embed/ei.js&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;Looks not very bad but the problem whit this code that it’s absolutely unresponsive. This means that the Collibra logo have fixed dimensions and can’t be resized without changes in the CCS code. So I decided to rewrite it using the CSS grids.&lt;/p&gt;
+
+&lt;p data-embed-version=&quot;2&quot; data-height=&quot;300&quot; data-preview=&quot;false&quot; data-theme-id=&quot;11473&quot; data-default-tab=&quot;result&quot; data-user=&quot;slavik925&quot; data-slug-hash=&quot;qBWzbwB&quot; class=&quot;codepen&quot;&gt;See the &lt;a href=&quot;https://codepen.io/slavik925/pen/qBWzbwB&quot;&gt;pen&lt;/a&gt; on &lt;a href=&quot;//codepen.io&quot;&gt;CodePen&lt;/a&gt;.&lt;/p&gt;
+&lt;script async=&quot;&quot; src=&quot;https://production-assets.codepen.io/assets/embed/ei.js&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;This is a way better I guess and to solidify my success :) I have put this logo into this blog (you could find it on the main page at a top or at the bottom of this article).&lt;/p&gt;
+
+&lt;h3 id=&quot;what-next&quot;&gt;What next?&lt;/h3&gt;
+
+&lt;p&gt;I’ve definitely recommend you to try to draw something or even go next level and try to create game using only CSS.&lt;/p&gt;
+
+&lt;p&gt;In the end I want to leave a few resources that would help you to improve your CSS knowledge.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Official W3C site
+    &lt;ul&gt;
+      &lt;li&gt;https://www.w3.org/Style/CSS/learning&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;To lear more about grid layout
+    &lt;ul&gt;
+      &lt;li&gt;https://cssgridgarden.com&lt;/li&gt;
+      &lt;li&gt;https://css-tricks.com/snippets/css/complete-guide-grid/&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;To lean more about flex box
+    &lt;ul&gt;
+      &lt;li&gt;https://flexboxfroggy.com/&lt;/li&gt;
+      &lt;li&gt;http://www.flexboxdefense.com/&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;As a good inspiration resource I recommend you &lt;a href=&quot;https://codepen.io&quot;&gt;codepen.io&lt;/a&gt; where you could find a lot of good examples or even subscribe on their weekly newsletter https://codepen.io/spark/. It will bring you a lot of fresh and interesting works every week.&lt;/p&gt;
+
+&lt;p&gt;If you are already a CSS ninja you could go and check the latest CSS specs:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;https://github.com/w3c/csswg-drafts&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Watch the whole speech:
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;youtube:https://youtube.com/embed/P21O_6OqpR0?start=3162&amp;amp;end=4896&amp;amp;rel=0&amp;amp;amp;showinfo=0&lt;/code&gt;&lt;/p&gt;</content><author><name></name></author><category term="CSS" /><summary type="html">This is a first article in a short series inspired by CSS/JS Conf 2019 at Budapest.</summary></entry><entry><title type="html">ltube.net - что это и зачем?</title><link href="https://outofmemory.dev/2019/09/03/ltube-what-for.html" rel="alternate" type="text/html" title="ltube.net - что это и зачем?" /><published>2019-09-03T10:23:00+00:00</published><updated>2019-09-03T10:23:00+00:00</updated><id>https://outofmemory.dev/2019/09/03/ltube-what-for</id><content type="html" xml:base="https://outofmemory.dev/2019/09/03/ltube-what-for.html">&lt;p&gt;Мне кажется, одна из главных мотивационных сил, которая всегда мной движет - это обучение новым вещам, приобретение и тренировка навыков. Сейчас существует огромное количество различных сервисов типа &lt;a href=&quot;https://www.udemy.com&quot;&gt;Udemy&lt;/a&gt;, &lt;a href=&quot;https://www.coursera.org/&quot;&gt;Coursera&lt;/a&gt;, &lt;a href=&quot;https://www.edx.org/&quot;&gt;edX&lt;/a&gt; и многих других, которые позволяют обучится почти всему.&lt;/p&gt;
+
+&lt;p&gt;Создать курс на одной из таких площадок - не самое легкое занятие (я даже так, сходу не скажу какие требования для курса на udemy например). А вот, если нужен курс довольно нестандартный, по типу, научись рисовать ногой за два дня :) или, например, скейт, йойо или дайвинг…&lt;/p&gt;
+
+&lt;p&gt;У меня довольно часто возникала потребность научиться чему-то быстро и легко. Благо, люди делятся приобретенными навыками и знаниями. Как оказалось, огромный кладезь уроков по чему-либо оказался пам-парам-пам: &lt;a href=&quot;https://www.youtube.com/&quot;&gt;YouTube&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Вот, например, зимний снежный день и ты такой, а не подрифтить бы тебе на парковке? Первое, что я делаю, иду на youtube и там миллион уроков по дрифту - погнали. Из более реальных кейсов (с дрифтом все +/- так и было :)) - купил я себе ролики, и вот у меня уже 10тищ ютуб видео как кататься новичку.
+Потом в ход пошла гитара… Ну, в общем, идея понятна.&lt;/p&gt;
+
+&lt;p&gt;В общем, youtube очень выручает, если нужно поучиться, вагон разных видео курсов да еще и с такими направлениями, что не везде найдешь.&lt;/p&gt;
+
+&lt;p&gt;Но, ближе к делу. Вот, ты такой учишся йо йо, жонглированию, езде на конях, скейте или электротехнике и у тебя просто тонна видео/плейлистов/каналов, вообщем бардак. Прогресса не видно, где закончил не помнишь (особенно, если это хобби выходного дня), поделиться всем добром тоже не особо, да и быстро вне дома тоже смотреть не удобно.&lt;/p&gt;
+
+&lt;p&gt;И тут я такой: “вот бы кароч как-то бы себе все видео собирать в кучу и поделиться с остальными”. Так и появилась идея с &lt;a href=&quot;https://ltube.net/&quot;&gt;ltube.net&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Коротко как оно работает в моем случае.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/1_ltube_main_page.png&quot; alt=&quot;главная страница ltube.net&quot; title=&quot;Главная страница ltube.net&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Каждый курс состоит из набора уроков, где урок просто видео на youtube + тетрадь, где можно оставлять свои заметки.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2_ltube_course.png&quot; alt=&quot;страница курса на ltube.net&quot; title=&quot;страница курса на ltube.net&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Можно либо подписаться на уже готовый курс (кто-то потрудился, собрал видосов и создал публичный курс). Либо создать свой курс, как приватный, так и публичный.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/3_ltube_course_details.png&quot; alt=&quot;страница урока на ltube.net&quot; title=&quot;страница урока на ltube.net&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;При создании курса просто наполняешь его разными видео из ютуба и заполняешь названия уроков. (Кстати, если все видео с одного плейлиста - там есть парсер, так что можно все разом вставить). Сохраняешь и курс котов.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/4_ltube_user_page.png&quot; alt=&quot;домашняя страница пользователя ltube.net&quot; title=&quot;домашняя страница пользователя ltube.net&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Хочешь - проходи себе сам, отмечая уроки и помня всегда где остановился. Либо можешь поделиться и сделать курс публичным - тогда его увидят все.&lt;/p&gt;
+
+&lt;p&gt;Вот и все. Проект бесплатный, так что если кому такое нужно, то пользуйтесь на здоровье.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://ltube.net&quot;&gt;&lt;img src=&quot;/assets/ltube.png&quot; alt=&quot;ltube&quot; /&gt;&lt;/a&gt;&lt;/p&gt;</content><author><name></name></author><category term="Rails" /><category term="Ruby" /><category term="Projects" /><category term="Web" /><summary type="html">Мне кажется, одна из главных мотивационных сил, которая всегда мной движет - это обучение новым вещам, приобретение и тренировка навыков. Сейчас существует огромное количество различных сервисов типа Udemy, Coursera, edX и многих других, которые позволяют обучится почти всему.</summary></entry><entry><title type="html">Быстрое переключение между пользователями с помощью AnyLogin gem</title><link href="https://outofmemory.dev/rails/2019/08/11/quick-switching-between-users-with-any-login-gem.html" rel="alternate" type="text/html" title="Быстрое переключение между пользователями с помощью AnyLogin gem" /><published>2019-08-11T16:05:00+00:00</published><updated>2019-08-11T16:05:00+00:00</updated><id>https://outofmemory.dev/rails/2019/08/11/quick-switching-between-users-with-any-login-gem</id><content type="html" xml:base="https://outofmemory.dev/rails/2019/08/11/quick-switching-between-users-with-any-login-gem.html">&lt;p&gt;Я думаю, всем знакомо, когда в системе есть несколько пользователей (например, с разными ролями) и нужно сделать, что-то одним, а потом другим пользователем.
+И тут, начинается постоянный логин/логаут туда сюда, либо, еще несколько вкладок инкогнито режима с несколькими пользователями.
+Вобщем, такая себе быстрая разработка.&lt;/p&gt;
+
+&lt;p&gt;На помощь приходит &lt;a href=&quot;https://github.com/igorkasyanchuk/any_login]&quot;&gt;https://github.com/igorkasyanchuk/any_login&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;После установки в нижнем левом углу пояляеться иконка, с помощью которой можно легко и быстро переключать пользователей:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/any_login.png&quot; alt=&quot;AnyLogin gem use case&quot; title=&quot;AnyLogin gem use case&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;установка&quot;&gt;Установка&lt;/h2&gt;
+
+&lt;p&gt;Я думаю &lt;a href=&quot;https://github.com/igorkasyanchuk/any_login]&quot;&gt;здесь&lt;/a&gt; все и так ясно, в кратце:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;Добавляем в gemfile&lt;/p&gt;
+
+    &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; gem 'any_login'
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;В главный лайаут (например, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;app/views/layouts/application.html.erb&lt;/code&gt; если у вас rails и erb) добавляем:&lt;/p&gt;
+
+    &lt;div class=&quot;language-erb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; ...
+ &lt;span class=&quot;nt&quot;&gt;&amp;lt;/html&amp;gt;&lt;/span&gt;
+ &lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;any_login_here&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;defined?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;AnyLogin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Вобщем все. Затем в левом нижнем углу появиться иконка, позваляющая вибирать пользователей как на картинке выше.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Если у вас Rails + Devise больше ничего делать не нужно. 
+По умолчанию этот gem включен только в development mode.&lt;/p&gt;
+
+&lt;h3 id=&quot;полезное&quot;&gt;Полезное&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Для того, чтоб вот вырубить для прода, вот так, прям на 100% делаем так:&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# Initializer: config/initializers/any_login.rb&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;AnyLogin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;setup&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;enabled&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;ul&gt;
+  &lt;li&gt;Кастомизация&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;rails&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;g&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;any_login&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;initializer&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Можно настроить более детально, например: лимит количества юзеров в дропдауне, адрес для редиректа после удачного входа и тд.&lt;/p&gt;
+
+&lt;p&gt;Все настройки тоже есть &lt;a href=&quot;https://github.com/igorkasyanchuk/any_login]&quot;&gt;здесь&lt;/a&gt; в разделе Options.&lt;/p&gt;
+
+&lt;p&gt;Еще пользователей в дропдауне можно сортировать сразу по группам, как-то так:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# Initializer: config/initializers/any_login.rb&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;AnyLogin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;setup&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;collection_method&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:grouped_collection_by_role&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# User class: app/models/user.rb&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;User&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;grouped_collection_by_role&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;s1&quot;&gt;'admin'&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;admins&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;limits&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+      &lt;span class=&quot;s1&quot;&gt;'moderator'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;moderators&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;limit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+      &lt;span class=&quot;s1&quot;&gt;'user'&lt;/span&gt;      &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;users&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;limit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;ошибки&quot;&gt;Ошибки&lt;/h3&gt;
+&lt;p&gt;Если вдруг у вас ошибка при запуске сервера типа такой:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;'method_missing': undefined method 'assets'
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Значит, скорей всего, необходимо добавить для правильной работы в &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;config/application.rb&lt;/code&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;sprockets/railtie&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><category term="Rails" /><summary type="html">Я думаю, всем знакомо, когда в системе есть несколько пользователей (например, с разными ролями) и нужно сделать, что-то одним, а потом другим пользователем. И тут, начинается постоянный логин/логаут туда сюда, либо, еще несколько вкладок инкогнито режима с несколькими пользователями. Вобщем, такая себе быстрая разработка.</summary></entry></feed>

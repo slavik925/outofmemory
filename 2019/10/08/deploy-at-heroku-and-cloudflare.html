@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Как развернуть свой проект и не стать devops’ом: дружим heroku с cloudflare. | Outofmemory</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Как развернуть свой проект и не стать devops’ом: дружим heroku с cloudflare." />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="TL;DR" />
+<meta property="og:description" content="TL;DR" />
+<link rel="canonical" href="https://outofmemory.dev/2019/10/08/deploy-at-heroku-and-cloudflare.html" />
+<meta property="og:url" content="https://outofmemory.dev/2019/10/08/deploy-at-heroku-and-cloudflare.html" />
+<meta property="og:site_name" content="Outofmemory" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-10-08T12:00:00+00:00" />
+<script type="application/ld+json">
+{"headline":"Как развернуть свой проект и не стать devops’ом: дружим heroku с cloudflare.","dateModified":"2019-10-08T12:00:00+00:00","datePublished":"2019-10-08T12:00:00+00:00","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://outofmemory.dev/logo.svg"}},"mainEntityOfPage":{"@type":"WebPage","@id":"https://outofmemory.dev/2019/10/08/deploy-at-heroku-and-cloudflare.html"},"url":"https://outofmemory.dev/2019/10/08/deploy-at-heroku-and-cloudflare.html","description":"TL;DR","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="https://outofmemory.dev/feed.xml" title="Outofmemory" /></head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" href="/">
+      
+        <img src="/logo.svg" class="site-logo" width="auto" height="56">
+        Outofmemory
+      
+    </a></div>
+</header><main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Как развернуть свой проект и не стать devops&#39;ом: дружим heroku с cloudflare.</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2019-10-08T12:00:00+00:00" itemprop="datePublished">Oct 8, 2019
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h4 id="tldr">TL;DR</h4>
+
+<blockquote>
+  <p>Главная фишка в том, как можно бесплатно прикрутить SSL на heroku. Также немного рассказал, как перенёс все с digitalocean на heroku, да еще и за бесплатно прикрутил SSL.</p>
+</blockquote>
+
+<h3 id="начало">Начало</h3>
+
+<p>Начнём с обычной ситуации начинающего стартапера: ты пилишь свой продукт, доменное имя уже куплено, репозитории созданы, команда пыхтит и что-то там накодано. Пришло время показать достигнутый результат пользователям/инвесторам.</p>
+
+<p>Мы конечно же кул хацкеры и всё можем сделать сами. Берем digitalocean и поехали.</p>
+
+<h4 id="что-могло-пойти-не-совсем-так">Что, могло пойти не совсем так?</h4>
+
+<p>И так, всего за 10$ ты получаешь «дроплет» с 2гб RAM и сколько-то там места на HDD.</p>
+
+<p>Вот оно, счастье совсем близко, осталось задеплоить проект и…
+Ах да задеплоить, только вот деплоить не особо есть куда так, как у нас голый линукс.</p>
+
+<h4 id="digitalocean-или-сам-себе-devops">Digitalocean или сам себе devops.</h4>
+
+<p>Проект написан на Rails и оказалось, что просто скопировать все файлы на дроплет не вариант :).</p>
+
+<p>Не буду вдаваться во все подробности (тут можно отдельно три статьи ещё написать) но, как оказалось настраивать нужно довольно много и практически всё через возню с консолью.</p>
+
+<p>Коротко, в настройку входило:</p>
+<ul>
+  <li>настройка самого «дроплета» (пользователи, ssh, ключи, файрвол, ruby, etc)</li>
+  <li>capistrano для деплоя Rails</li>
+  <li>nginx (риверс прокси)</li>
+  <li>letsencrypt для ssl</li>
+  <li>postgresql</li>
+</ul>
+
+<p>За этим всем приходиться постоянно смотреть, переодически накатывая последние апдейты, делая перезагрузки и мониторя логи.</p>
+
+<p>На саму настройку всего этого добра суммарно ушло несколько недель. А в случае проблем делаешь bash history и смотришь, где вообще что, лежит и что, ты там вообще последний раз делал. Даже само обновление версии ruby то ещё приключение.</p>
+
+<p>Хорошо если бы этими вещами занялся кто-то, а ещё лучше автоматизировать весь процесс. Лень писать скрипты и заниматься этим всем самому, а искать специального человека - не дешево.</p>
+
+<h3 id="heroku-приходить-на-помощь">Heroku приходить на помощь.</h3>
+
+<blockquote>
+  <p>Heroku — облачная PaaS-платформа, поддерживающая ряд языков программирования.</p>
+
+  <p>https://ru.wikipedia.org/wiki/Heroku</p>
+</blockquote>
+
+<p>В перспективе возможно не самое дешевое решение, но мы воспользуемся бесплатной опцией.</p>
+
+<p>И так что нужно? Регистрируемся, затем вписываем название нашей аппликации и получаем “ссылку на репозиторий”, затем пушаем туда свой код и всё.
+Как всё? Вот так, всё.</p>
+
+<p>В моем случае с Rails приложение собралось и сразу стало доступно по адресу - 
+<code class="language-plaintext highlighter-rouge">app-name.herokuapp.com</code></p>
+
+<h4 id="счастье-близко---но-есть-нюанс">Счастье близко - но есть нюанс</h4>
+
+<p>Heroku не предоставляет возможности работы с почтой, файлами и базой данных из коробки. Поэтому кое-что настроить всё-таки придется.</p>
+
+<p>Почти все дополнительные вещи в heroku настраиваются через <a href="https://elements.heroku.com/addons">аддоны</a>. 
+Для базы данных мне понадобился <a href="https://elements.heroku.com/addons/heroku-postgresql">heroku-postgresql</a>, а для почты <a href="https://elements.heroku.com/addons/mailgun">mailgun</a>.</p>
+
+<p>К слову, бесплатная версия <a href="https://elements.heroku.com/addons/heroku-postgresql">heroku-postgresql</a> позволяет сохранять до 10000 тысяч строк.</p>
+
+<p>А для файлов вообще можно обойтись без аддона, отлично подойдет <a href="https://aws.amazon.com/s3/">Amazon S3</a>.</p>
+
+<h3 id="самая-интересная-часть-goddaddy--heroku--ssl">Самая интересная часть (Goddaddy &amp; Heroku &amp; SSL)</h3>
+
+<p>У нас в распоряжении уже был домен, который нужно было прикрутить, а сам процесс подключения домена хорошо описан в доке:
+https://devcenter.heroku.com/articles/custom-domains</p>
+
+<p>Добавляем домен к heroku:</p>
+
+<p><img src="/assets/heroku_domains.png" alt="Domains added to Heroku" title="Domains added to Heroku" /></p>
+
+<p>Но, к сожалению, (и моему удивлению) heroku не имеет постоянного IP адреса, что означало невозможность указать в godaddy запись типа «А» чтоб всё просто заработало из коробки.</p>
+
+<p>Ну что-ж подумал я, мы же всё ещё хацкеры - делаем редирект.</p>
+
+<p>Быстро настраиваем редирект с godaddy на наш herokuapp и все бы классно, но SSL мать его! Конечно же при таком редиректе всё переставало работать через https. Как оказалось нужно покупать ещё и SSL сертификат у godaddy.
+“Это фиаско, братан” - продумал я.</p>
+
+<h3 id="как-использовать-бесплатный-ssl-от-heroku-и-cloudflare">Как использовать бесплатный SSL от Heroku и Cloudflare.</h3>
+
+<p>Пройдя не одну поисковую выдачу в «утка-утка иди» и перелопатив кучу статей на «среднем» я таки нашёл возможность.</p>
+
+<p>Этой возможностью стал <a href="https://www.cloudflare.com/">Cloudflare</a>. Он дает бесплатный SSL сертификат и может полностью принять на себе управление доменом.</p>
+
+<p>Так, как по умолчанию наш <code class="language-plaintext highlighter-rouge">app.herokuapp.com</code> уже имеет дефолтный SSL сертификат, мы можем его использовать, подключив только cloudflare.</p>
+
+<p>Дело за малым, регаемся на cloudflare. Далее в godaddy поинтим неймспейси на cloudflrare:</p>
+
+<p><img src="/assets/godaddy_nameservers_config.png" alt="Godaddy pointing namespaces to cloudsflare" title="Godaddy pointing namespaces to cloudsflare" /></p>
+
+<p>Там в свою очередь импортируем все DNS записи и добавляем необходимые:</p>
+
+<p><img src="/assets/cloudflare_dns_config.png" alt="Cloudflare config dns" title="Cloudflare config dns" /></p>
+
+<p>Врубаем SSL:</p>
+
+<p><img src="/assets/cloudflare_ssl.png" alt="Cloudflare enable ssl" title="Cloudflare enable ssl" /></p>
+
+<h3 id="итог">Итог</h3>
+
+<p>Теперь при заходе на https://ltube.net и на https://ww.ltube.net - cloudflare будет проксировать на https://ltube.herokuapps.com (используя SSL).</p>
+
+<p>В итоге главная цель достигнута - используя heroku абсолютно не нужно заниматься долгой и мучительной конфигурацией инстанции сервисов и тп. Пушнул и деплой пошёл. Ну и всё за бесплатно.</p>
+
+<p>Основной минус — это цена. При масштабировании все этого добра придётся платить за каждый сервис отдельно: за базу, S3, heroku. Но мне, кажется, это всё равно дешевле чем менеджить целый дроплет, да и масштабироваться на порядок легче.</p>
+
+  </div><a class="u-url" href="/2019/10/08/deploy-at-heroku-and-cloudflare.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Outofmemory</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Outofmemory</li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/slavik925"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">slavik925</span></a></li><li><a href="https://www.twitter.com/vhorodovych"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">vhorodovych</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p></p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>SSH - The useful parts | Outofmemory</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="SSH - The useful parts" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Definition of SSH from wikipedia: Secure Shell (SSH) is a cryptographic network protocol for operating network services securely over an unsecured network." />
+<meta property="og:description" content="Definition of SSH from wikipedia: Secure Shell (SSH) is a cryptographic network protocol for operating network services securely over an unsecured network." />
+<link rel="canonical" href="https://outofmemory.dev/shell/ssh/2019/05/16/ssh-the-useful-parts.html" />
+<meta property="og:url" content="https://outofmemory.dev/shell/ssh/2019/05/16/ssh-the-useful-parts.html" />
+<meta property="og:site_name" content="Outofmemory" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-05-16T16:24:00+00:00" />
+<script type="application/ld+json">
+{"headline":"SSH - The useful parts","dateModified":"2019-05-16T16:24:00+00:00","datePublished":"2019-05-16T16:24:00+00:00","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://outofmemory.dev/logo.svg"}},"mainEntityOfPage":{"@type":"WebPage","@id":"https://outofmemory.dev/shell/ssh/2019/05/16/ssh-the-useful-parts.html"},"url":"https://outofmemory.dev/shell/ssh/2019/05/16/ssh-the-useful-parts.html","description":"Definition of SSH from wikipedia: Secure Shell (SSH) is a cryptographic network protocol for operating network services securely over an unsecured network.","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="https://outofmemory.dev/feed.xml" title="Outofmemory" /></head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" href="/">
+      
+        <img src="/logo.svg" class="site-logo" width="auto" height="56">
+        Outofmemory
+      
+    </a></div>
+</header><main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">SSH - The useful parts</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2019-05-16T16:24:00+00:00" itemprop="datePublished">May 16, 2019
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>Definition of SSH from wikipedia:</p>
+<blockquote>
+  <p>Secure Shell (SSH) is a cryptographic network protocol for operating network services securely over an unsecured network.</p>
+</blockquote>
+
+<h3 id="overview">Overview</h3>
+<p>This article is just a list of useful commands/features that are good to know about the SSH.</p>
+
+<h3 id="generate-new-keys">Generate new keys:</h3>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh-keygen -o -a 100 -t ed25519 -f ~/.ssh/id_ed25519 -C "john@example.com"
+</code></pre></div></div>
+
+<p><a href="https://medium.com/risan/upgrade-your-ssh-key-to-ed25519-c6e8d60d3c54">More details about difference between Ed25519 and RSA</a>.</p>
+
+<h3 id="keys-permissions">Keys permissions:</h3>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>chmod 700 ~/.ssh
+chmod 644 ~/.ssh/id_ed25519.pub
+chmod 600 ~/.ssh/id_ed25519
+chmod 644 ~/.ssh/authorized_keys
+chmod 644 ~/.ssh/known_hosts
+chmod 644 ~/.ssh/config
+</code></pre></div></div>
+
+<h3 id="copy-key-to-the-server">Copy key to the server</h3>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">ssh-copy-id <span class="nt">-i</span> ~/.ssh/id_ed25519.pub root@192.168.0.1</code></pre></figure>
+
+<h3 id="adding-key-to-keychain">Adding key to keychain</h3>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh-add -K ~/.ssh/id_ed25519
+</code></pre></div></div>
+
+<p>Under the hood this command basically adding content of pub key file into server <em>authorized_keys</em> file.</p>
+
+<h3 id="configure-ssh-to-always-use-keychain-osx">Configure SSH to always use keychain (OSX)</h3>
+<p>After setup you will not be prompted any more to add key and enter password after each system restart.</p>
+
+<p>Edit config file:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vim ~/.ssh/config
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Host *
+    AddKeysToAgent yes
+    UseKeychain yes
+    IdentifyFile /Users/john/.ssh/id_ed25519
+</code></pre></div></div>
+
+<h3 id="host-specific-configuration">Host specific configuration:</h3>
+<p>If you have multiple hosts instead of each time adding a key and typing a password you could create a configuration alias.</p>
+
+<p>Edit config file:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Host myHostNameOrIpAdress
+    HostName 192.168.0.1
+    User root
+    IdentityFile /Users/test/.ssh/id_aws_ed25519
+    Port 22
+</code></pre></div></div>
+<p>Now you could simply:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh myHostNameOrIpAdress
+</code></pre></div></div>
+
+<h3 id="local-port-forwarding--tunnel">Local port forwarding  (tunnel)</h3>
+
+<p>For example if the <strong>google.com</strong> is blocked in your network then you could create tunnel through the server that is outside this network and access google.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh -L 8001:google.com:80 root@192.168.0.1
+</code></pre></div></div>
+<p>This means we are forwarding our local port <strong>8001</strong> to <strong>google.com:80</strong>.</p>
+
+<p>This is also could be helpful to connect database behind the firewall.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh -L 5000:localhost:5432 root@192.168.0.1
+</code></pre></div></div>
+
+<p>What is important  here is that <strong>localhost:5432</strong> is the server localhost not the yours!</p>
+
+<p>And to connect from the local machine do:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psql -h localhost -p 5000
+</code></pre></div></div>
+
+<h3 id="remote-port-forwarding">Remote port forwarding</h3>
+
+<p>This work let’s say in opposite direction when you need to give an access to someone but it’s impossible to establish direct connection.
+For example if you have a resource that works only inside your corporate network.
+You could establish a “reverse tunnel” through the SSH server and access restricted node through it.</p>
+
+<p>By default this options is off so you need to turn it on:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vim /etc/ssh/sshd_config
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GatewayPorts yes
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>service ssh restart
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh -R 8001:localhost:3000 root@public-sshserver.com
+</code></pre></div></div>
+
+<p>Now from any remove host you could access <strong>public-sshserver.com:8001</strong> and this request will be redirected to your <strong>localhost:3000</strong>.
+Any one on remote host will able to connect port 8001.</p>
+
+<h4 id="tunnel-without-terminal">Tunnel without terminal</h4>
+<p>If you don’t need terminal but need only a tunnel use <strong>-nNt</strong> flags:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh -nNT -L 5000:localhost:5432 root@192.168.0.1
+</code></pre></div></div>
+
+<h2 id="security-measures">Security measures</h2>
+<h3 id="remove-all-finger-prints-from-known_hosts">Remove all finger prints from <strong><em>known_hosts</em></strong></h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh-keygen -R
+</code></pre></div></div>
+
+<p><a href="https://security.stackexchange.com/questions/20706/what-is-the-difference-between-authorized-keys-and-known-hosts-file-for-ssh">More about the difference between <strong>known_hosts</strong> and <strong>authorized_keys</strong></a></p>
+
+<h3 id="disable-root-login-and-disable-login-with-password">Disable root login and disable login with password</h3>
+<p>Edit <strong>sshd_config</strong>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>PermitRootLogin no
+PasswordAuthentification no
+</code></pre></div></div>
+
+<p>Do not forget to restart ssh service.</p>
+
+<h3 id="monitor-authentications-attempts">Monitor authentications attempts:</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>less /var/log/auth.log
+</code></pre></div></div>
+
+<p>or with</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>lastlog (-u flag for concere user)
+</code></pre></div></div>
+
+<h3 id="get-the-command-input-history-for-specific-user">Get the command input history for specific user</h3>
+<p>Go to interested user home directory and read <strong>bash_history</strong> file:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cat /Users/test/.bash_history
+</code></pre></div></div>
+
+<h3 id="comparison-between-vpn">Comparison between VPN</h3>
+
+<p>Here is the nice article of explaining how the <a href="https://www.howtogeek.com/118145/vpn-vs.-ssh-tunnel-which-is-more-secure/">SSH different from VPN</a>.</p>
+
+  </div><a class="u-url" href="/shell/ssh/2019/05/16/ssh-the-useful-parts.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Outofmemory</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Outofmemory</li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/slavik925"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">slavik925</span></a></li><li><a href="https://www.twitter.com/vhorodovych"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">vhorodovych</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p></p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

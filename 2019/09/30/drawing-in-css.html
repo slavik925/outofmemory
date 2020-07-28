@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Drawing in CSS - how and why? | Outofmemory</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Drawing in CSS - how and why?" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="This is a first article in a short series inspired by CSS/JS Conf 2019 at Budapest." />
+<meta property="og:description" content="This is a first article in a short series inspired by CSS/JS Conf 2019 at Budapest." />
+<link rel="canonical" href="https://outofmemory.dev/2019/09/30/drawing-in-css.html" />
+<meta property="og:url" content="https://outofmemory.dev/2019/09/30/drawing-in-css.html" />
+<meta property="og:site_name" content="Outofmemory" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-09-30T16:00:00+00:00" />
+<script type="application/ld+json">
+{"headline":"Drawing in CSS - how and why?","dateModified":"2019-09-30T16:00:00+00:00","datePublished":"2019-09-30T16:00:00+00:00","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://outofmemory.dev/logo.svg"}},"mainEntityOfPage":{"@type":"WebPage","@id":"https://outofmemory.dev/2019/09/30/drawing-in-css.html"},"url":"https://outofmemory.dev/2019/09/30/drawing-in-css.html","description":"This is a first article in a short series inspired by CSS/JS Conf 2019 at Budapest.","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="https://outofmemory.dev/feed.xml" title="Outofmemory" /></head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" href="/">
+      
+        <img src="/logo.svg" class="site-logo" width="auto" height="56">
+        Outofmemory
+      
+    </a></div>
+</header><main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Drawing in CSS - how and why?</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2019-09-30T16:00:00+00:00" itemprop="datePublished">Sep 30, 2019
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>This is a first article in a short series inspired by CSS/JS Conf 2019 at Budapest.</p>
+
+<p>The very first topic there was presented by Giulia Cardieri https://twitter.com/ggiulia - “CSS Games and Drawings in the real world: useful or just fun” which was actually quite inspiring.</p>
+
+<p>The main idea is to bring more attention to CSS drawing capabilities, get some fun and experience while coding in CSS not in a usual manner.</p>
+
+<p>You can familiarize with one of her projects written just for fun called <a href="http://dinokiki.com">Dinokiki</a> (be careful with the sound).</p>
+
+<p>And just look into this nice Peppa Pig created only with the CSS:</p>
+
+<p data-embed-version="2" data-height="300" data-preview="false" data-theme-id="11473" data-default-tab="result" data-user="marcindotka" data-slug-hash="GrrKYE" class="codepen">See the <a href="https://codepen.io/marcindotka/pen/GrrKYE">pen</a> on <a href="//codepen.io">CodePen</a>.</p>
+<script async="" src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
+
+<p>But the most inspiring for me was this Planets game written only using HTML/CSS features with no Java Script at all! Moreover the game handle clicks on the cards and even has a simple logic to track whether you win or not.</p>
+
+<p data-embed-version="2" data-height="300" data-preview="false" data-theme-id="11473" data-default-tab="result" data-user="giuliacardieri" data-slug-hash="XYOZom" class="codepen">See the <a href="https://codepen.io/giuliacardieri/pen/XYOZom">pen</a> on <a href="//codepen.io">CodePen</a>.</p>
+<script async="" src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
+
+<p>Looks awesome right?</p>
+
+<p>But how do you manage clicks and responds to events without JS? The code and technic is pretty clever - just to use styled check box. When it is checked - show one state otherwise another.</p>
+
+<h3 id="but-why">But why?</h3>
+<p>Here are few points:</p>
+<ul>
+  <li>develop creativity</li>
+  <li>extend you knowledge of CSS</li>
+  <li>get some fun!</li>
+</ul>
+
+<h3 id="but-how">But how?</h3>
+
+<p>If you are struggling on how to start, first you need to select something that you want to draw.
+If your CSS knowledge is limited I recommend you to start from something simple.</p>
+
+<p>Try to draw a simple logo (Chrome e.g), flower (🌼, 🌻), car (🚓, 🚗), clock(⏱️, ⏰), etc.</p>
+
+<p>Then follow this steps:</p>
+
+<ol>
+  <li>Break the drawing into simple geometric forms.</li>
+  <li>Use HTML to represent pieces of the drawing.</li>
+  <li>Use CSS to style and position each piece.</li>
+  <li>Repeat from step one if needed.</li>
+</ol>
+
+<p>In my example I have started to draw the logo of the company where I’m working at:</p>
+
+<p data-embed-version="2" data-height="300" data-preview="false" data-theme-id="11473" data-default-tab="result" data-user="slavik925" data-slug-hash="BaBEzPL" class="codepen">See the <a href="https://codepen.io/slavik925/pen/BaBEzPL">pen</a> on <a href="//codepen.io">CodePen</a>.</p>
+<script async="" src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
+
+<p>Looks not very bad but the problem whit this code that it’s absolutely unresponsive. This means that the Collibra logo have fixed dimensions and can’t be resized without changes in the CCS code. So I decided to rewrite it using the CSS grids.</p>
+
+<p data-embed-version="2" data-height="300" data-preview="false" data-theme-id="11473" data-default-tab="result" data-user="slavik925" data-slug-hash="qBWzbwB" class="codepen">See the <a href="https://codepen.io/slavik925/pen/qBWzbwB">pen</a> on <a href="//codepen.io">CodePen</a>.</p>
+<script async="" src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
+
+<p>This is a way better I guess and to solidify my success :) I have put this logo into this blog (you could find it on the main page at a top or at the bottom of this article).</p>
+
+<h3 id="what-next">What next?</h3>
+
+<p>I’ve definitely recommend you to try to draw something or even go next level and try to create game using only CSS.</p>
+
+<p>In the end I want to leave a few resources that would help you to improve your CSS knowledge.</p>
+
+<ul>
+  <li>Official W3C site
+    <ul>
+      <li>https://www.w3.org/Style/CSS/learning</li>
+    </ul>
+  </li>
+  <li>To lear more about grid layout
+    <ul>
+      <li>https://cssgridgarden.com</li>
+      <li>https://css-tricks.com/snippets/css/complete-guide-grid/</li>
+    </ul>
+  </li>
+  <li>To lean more about flex box
+    <ul>
+      <li>https://flexboxfroggy.com/</li>
+      <li>http://www.flexboxdefense.com/</li>
+    </ul>
+  </li>
+</ul>
+
+<p>As a good inspiration resource I recommend you <a href="https://codepen.io">codepen.io</a> where you could find a lot of good examples or even subscribe on their weekly newsletter https://codepen.io/spark/. It will bring you a lot of fresh and interesting works every week.</p>
+
+<p>If you are already a CSS ninja you could go and check the latest CSS specs:</p>
+<ul>
+  <li>https://github.com/w3c/csswg-drafts</li>
+</ul>
+
+<p>Watch the whole speech:
+<code class="language-plaintext highlighter-rouge">youtube:https://youtube.com/embed/P21O_6OqpR0?start=3162&amp;end=4896&amp;rel=0&amp;amp;showinfo=0</code></p>
+
+  </div><a class="u-url" href="/2019/09/30/drawing-in-css.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Outofmemory</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Outofmemory</li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/slavik925"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">slavik925</span></a></li><li><a href="https://www.twitter.com/vhorodovych"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">vhorodovych</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p></p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
