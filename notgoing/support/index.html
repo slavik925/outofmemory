@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Not Going Support</title>
+  <meta name="description" content="Support page for the Not Going iOS app.">
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #191816;
+      --muted: #64605a;
+      --line: #e5e0d8;
+      --paper: #fbfaf7;
+      --surface: #ffffff;
+      --accent: #1f7a5a;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+      color: var(--ink);
+      background: var(--paper);
+    }
+
+    main {
+      width: min(760px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 64px 0;
+    }
+
+    header {
+      margin-bottom: 36px;
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(36px, 7vw, 64px);
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    h2 {
+      margin: 0 0 12px;
+      font-size: 22px;
+      letter-spacing: 0;
+    }
+
+    p {
+      margin: 0 0 16px;
+      color: var(--muted);
+      font-size: 17px;
+    }
+
+    section {
+      padding: 24px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    a {
+      color: var(--accent);
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .notice {
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+    }
+
+    .notice p:last-child {
+      margin-bottom: 0;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Not Going Support</h1>
+      <p>Support information for the Not Going iOS app.</p>
+    </header>
+
+    <section>
+      <h2>Contact</h2>
+      <p>For support, questions, or app review contact, open an issue on GitHub:</p>
+      <p><a href="https://github.com/slavik925/notgoing/issues">github.com/slavik925/notgoing/issues</a></p>
+    </section>
+
+    <section>
+      <h2>About The App</h2>
+      <div class="notice">
+        <p>Not Going is an entertainment app for creating pretend mood-based travel plans.</p>
+        <p>It does not process real hotel bookings, payments, reservations, travel purchases, or cancellations. Hotel-style listings and prices are playful planning content only and are not guaranteed.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Privacy</h2>
+      <p>Not Going does not require an account and does not collect payment information. Any saved pretend trips are stored locally on the device.</p>
+    </section>
+  </main>
+</body>
+</html>
